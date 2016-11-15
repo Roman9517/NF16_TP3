@@ -50,7 +50,7 @@ int ajouterRayon(T_Magasin *magasin,T_Rayon *rayon) //OK
         return (1);
         }
 
-   else if (magasin->premier->suivant==NULL)
+   else if ((magasin->premier->suivant==NULL) && (strcmp(rayon->nom_rayon,magasin->premier->nom_rayon)!=0))
     {
         magasin->premier->suivant=rayon;
         rayon->suivant=NULL;
@@ -93,7 +93,7 @@ int ajouterRayon(T_Magasin *magasin,T_Rayon *rayon) //OK
         }
 
 
-T_Rayon *rechercheRayon (char *nom, T_Magasin *mag)
+T_Rayon *rechercheRayon (char *nom, T_Magasin *mag)  //OK
 {
     T_Rayon *temp=mag->premier;
     while ((strcmp(nom, temp->nom_rayon)!=0) && (temp->suivant!=NULL))
@@ -105,7 +105,7 @@ T_Rayon *rechercheRayon (char *nom, T_Magasin *mag)
 }
 
 
-int ajouterProduit(T_Rayon *rayon,T_Produit *produit)
+int ajouterProduit(T_Rayon *rayon,T_Produit *produit) //OK
 {
 
 
@@ -176,22 +176,22 @@ int ajouterProduit(T_Rayon *rayon,T_Produit *produit)
 }
 
 
-void afficherMagasin(T_Magasin *magasin)  //OK
+void afficherMagasin(T_Magasin *magasin)  //OK, juste faire la mise en page
 {
-printf("Nom \t\t| Nombre de produits \n");
+printf("Nom \t| Nombre de produits \n");
 T_Rayon *temp = magasin->premier;
 
 while (temp != NULL)
     {
-    printf("%s\t\t|",temp->nom_rayon);
-    printf("%d\n", temp->nombre_produits);
+    printf("%s\t|",temp->nom_rayon);
+    printf("%d \t\n", temp->nombre_produits);
     temp = temp->suivant;
     }
 }
 
 
 
-void afficherRayon(T_Rayon *rayon)
+void afficherRayon(T_Rayon *rayon)   //OK, juste faire la mise en page
 {
 printf("Marque \t\t| Prix \t\t| Qualite \t\t| Quantite en stock \n");
 T_Produit *temp = rayon->premier;   //a quoi ca sert ? pourquoi on pointe sur le premier produit alors que Temp est un pointeur sur rayon ?
@@ -213,10 +213,11 @@ int supprimerProduit(T_Rayon *rayon, char *marque_produit)
 if (rayon->premier==NULL) return 0;    // pareil regarder les "if" et "else" car on risque de rien retourner
 else if(rayon->premier->suivant==NULL)
 {
-        if(strcpy(rayon->premier->marque, marque_produit)==0)
+        if(strcmp(rayon->premier->marque, marque_produit)==0)
         {
         free(rayon->premier);
         rayon->premier=NULL;
+        rayon->nombre_produits = rayon->nombre_produits - 1;
         return 1;
         }
         else return 0;  //Si un seul élément, et c'est pas celui qu'on veut
@@ -232,6 +233,7 @@ if (strcmp(temp->marque, marque_produit)==0)  //supprime la tete de liste
     {
         rayon->premier = temp2;
         free(temp);
+        rayon->nombre_produits = rayon->nombre_produits - 1;
         return 1;
     }
 
@@ -246,6 +248,7 @@ else {
             {
               temp->suivant=temp2->suivant;
               free(temp2);
+              rayon->nombre_produits = rayon->nombre_produits - 1;
               return 1;
             }
 
