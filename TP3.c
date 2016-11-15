@@ -207,112 +207,101 @@ while (temp != NULL){
 }
 
 
-int supprimerProduit(T_Rayon *rayon, char *marque_produit)
+int supprimerProduit(T_Rayon *rayon, char *marque_produit)    //OK
 {
-
-if (rayon->premier==NULL) return 0;    // pareil regarder les "if" et "else" car on risque de rien retourner
-else if(rayon->premier->suivant==NULL)
+T_Produit *temp, *temp2;
+if (rayon->premier==NULL) return 0;
+else if (strcmp(rayon->premier->marque, marque_produit)==0)
 {
-        if(strcmp(rayon->premier->marque, marque_produit)==0)
+  temp2 = rayon->premier;
+  rayon->premier=rayon->premier->suivant;
+  free(temp2);
+  rayon->nombre_produits = rayon->nombre_produits - 1;
+  return 1;
+}
+else
+    {
+        temp=rayon->premier;
+        temp2=rayon->premier->suivant;
+        while(temp2 !=NULL)
         {
-        free(rayon->premier);
-        rayon->premier=NULL;
-        rayon->nombre_produits = rayon->nombre_produits - 1;
-        return 1;
+            if (strcmp(temp2->marque, marque_produit)==0)
+            {
+                temp->suivant=temp2->suivant;
+                free(temp2);
+                rayon->nombre_produits = rayon->nombre_produits - 1;
+                return 1;
+            }
+            temp=temp2;
+            temp2=temp2->suivant;
         }
-        else return 0;  //Si un seul élément, et c'est pas celui qu'on veut
+
+    }
+
 }
 
-else
-{
-    T_Produit *temp = rayon->premier;
-    T_Produit *temp2 = temp->suivant;
 
 
-if (strcmp(temp->marque, marque_produit)==0)  //supprime la tete de liste
+
+T_Produit *supprimerProduitTete(T_Produit *premier)         //OK
     {
-        rayon->premier = temp2;
-        free(temp);
-        rayon->nombre_produits = rayon->nombre_produits - 1;
-        return 1;
+        T_Produit *temp;
+        if (premier !=NULL)
+        {
+            temp=premier;
+            premier=premier->suivant;
+            free(temp);
+        }
+        return premier;
     }
 
-else {
-        while((strcmp(temp2->marque,marque_produit)>0) && (temp2 != NULL))   //Tant que on a pas le même nom de marque et qu'on est pas à la fin de la liste
-            {
-                temp=temp2;
-                temp2= temp2->suivant;      //On avance
-            }
-
-        if (strcmp(temp2->marque, marque_produit)==0)       //Si on a trouvé la marque, on supprime temp2 (ça marche même si temp2 est la queue de liste
-            {
-              temp->suivant=temp2->suivant;
-              free(temp2);
-              rayon->nombre_produits = rayon->nombre_produits - 1;
-              return 1;
-            }
-
-        else if ((temp2->suivant==NULL)  && (strcmp(temp2->marque, marque_produit)!=0))   //Si on a pas le nom de la marque dans la liste
-            {
-                return 0;
-            }
-    }
-
-}
-
-}
 
 
 
-int supprimerRayon(T_Magasin *magasin, char *nom_rayon)
+int supprimerRayon(T_Magasin *magasin, char *nom_rayon)         //OK
 {
-if (magasin->premier==NULL) return 0;
-else if (magasin->premier->suivant==NULL)    // meme probleme
-{
-    if(strcpy(magasin->premier->nom_rayon,nom_rayon)==0)
-    {
-    free(magasin->premier);
-    magasin->premier==NULL; // == ou juste = ?
-    return 1;
-    }
-    else return 0;
-}
-else
-{
-    T_Rayon *temp = magasin->premier;
+T_Rayon *temp = magasin->premier;
 T_Rayon *temp2 = temp->suivant;
 
-if (strcmp(temp->nom_rayon, nom_rayon)==0)  //supprime la tete de liste
+if (magasin->premier==NULL) return 0;
+else if (strcmp(magasin->premier->nom_rayon, nom_rayon)==0)
+{
+  temp2 = magasin->premier;
+  magasin->premier=magasin->premier->suivant;
+  while (temp2->premier!=NULL)
+  {
+      temp2->premier = supprimerProduitTete(temp2->premier);
+      temp2->nombre_produits=temp2->nombre_produits - 1;
+  }
+  free(temp2);
+  return 1;
+}
+else
     {
-        magasin->premier = temp2;
-        free(temp);
-        return 1;
-    }
-
-else {
-        while((strcmp(temp2->nom_rayon,nom_rayon)>0) && (temp2->suivant != NULL))   //Tant que on a pas le même nom de rayon et qu'on est pas à la fin de la liste
+        temp=magasin->premier;
+        temp2=magasin->premier->suivant;
+        while(temp2 !=NULL)
+        {
+            if (strcmp(temp2->nom_rayon, nom_rayon)==0)
             {
-                temp=temp2;
-                temp2= temp2->suivant;      //On avance
-                temp->suivant=temp2;
+                temp->suivant=temp2->suivant;
+                 while (temp2->premier!=NULL)
+                    {
+                        temp2->premier = supprimerProduitTete(temp2->premier);
+                        temp2->nombre_produits=temp2->nombre_produits - 1;
+                    }
+                free(temp2);
+                return 1;
             }
+            temp=temp2;
+            temp2=temp2->suivant;
+        }
 
-        if (strcmp(temp2->nom_rayon, nom_rayon)==0)       //Si on a trouvé le rayon, on supprime temp2 (ça marche même si temp2 est la queue de liste)
-            {
-              temp->suivant=temp2->suivant;
-              free(temp2);
-              return 1;
-            }
-
-        else if ((temp2->suivant==NULL)  && (strcmp(temp2->nom_rayon, nom_rayon)!=0))   //Si on a pas le nom du rayon dans la liste
-            {
-                return 0;
-            }
     }
 
 }
 
-}
+
 
 
 void RechercheProduits(T_Magasin *magasin, float prix_min, float prix_max)
@@ -336,8 +325,7 @@ while(temp!=NULL) //tant qu'on es pas à la fin de la liste des magasins
     }
 }
 
-//faire si magasin->premier->premier->prix > prix_max alors sortir, Omega(1)
-//J'ai l'impression que c'est juste quand même ce que j'ai fait
+
 
 T_Produit *triprix(T_Produit *p1, T_Produit *p2)
 {
@@ -405,6 +393,4 @@ while (temp2==NULL && temp1!=NULL)          //Si on a finit le deuxième rayon, 
     temp->premier=temp->premier->suivant;
 }
 }
-
-
 
