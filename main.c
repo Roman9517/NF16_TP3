@@ -80,12 +80,14 @@ void main()
 
 
             case 7 :  printf("Quel rayon supprimer?\n");
-                        scanf("%s",nom);
-                        do {p=supprimerRayon(mag, nom);} while (p!=1);
+                        scanf("%s",nomR);
+                        afficherMagasin(mag);
+                        supprimerRayon(mag,nomR);
+                        afficherMagasin(mag);
                         break;
 
 
-            case 8 :  printf("Saisir le prix minimum\n");
+            case 8 :  printf("Saisir le prix minimum\n");           //Il ne reste plus que ça et le bonus :D
                        scanf("%f", &min);
                        printf("Saisir le prix maximum\n");
                        scanf("%f", &max);
@@ -105,5 +107,6 @@ void main()
         }
 
 }
+
 
 
