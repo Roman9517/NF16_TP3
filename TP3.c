@@ -93,6 +93,17 @@ int ajouterRayon(T_Magasin *magasin,T_Rayon *rayon) //OK
         }
 
 
+T_Rayon *rechercheRayon (char *nom, T_Magasin *mag)
+{
+    T_Rayon *temp=mag->premier;
+    while ((strcmp(nom, temp->nom_rayon)!=0) && (temp->suivant!=NULL))
+    {
+        temp=temp->suivant;
+    }
+    if (temp==NULL) return NULL;
+    else return temp;
+}
+
 
 int ajouterProduit(T_Rayon *rayon,T_Produit *produit)
 {
@@ -103,67 +114,76 @@ int ajouterProduit(T_Rayon *rayon,T_Produit *produit)
     {
         rayon->premier=produit;
         rayon->premier->suivant=NULL;
+        rayon->nombre_produits = rayon->nombre_produits + 1;
+        return 1;
     }
-
-    else
-    {
-        T_Produit *temp=rayon->premier;
-        T_Produit *temp2=temp;
-    do {
-        temp=temp2;  //on se décalle dans la liste
-        temp2 = temp2->suivant;
-        if (/*(strcmp(temp->marque, produit->marque)==0) ||*/ (strcmp(temp2->marque, produit->marque)==0))
+    else if ((produit->prix <= rayon->premier->prix) && (strcmp(produit->marque,rayon->premier->marque) != 0))
+             {
+                 produit->suivant = rayon->premier;
+                 rayon->premier = produit;
+                 rayon->nombre_produits = rayon->nombre_produits + 1;
+                 return 1;
+             }
+    else if (rayon->premier->suivant == NULL)
         {
-            return 0; //on s'arrete ici si la marque existe déjà
-        }
-       } while (temp2->suivant != NULL);
-    //arrivé ici, nous sommes sur de ne pas avoir 2 fois la même marque
-
-
-    temp=rayon->premier; // on reinitialise nos variables
-    temp2=temp;
-
-    if(produit->prix < rayon->premier->prix)  //on ajoute en tete         !!! Ce "if" n'a pas de "else" donc on peut ne rien retourner !
-        {
-            produit->suivant = rayon->premier;
-            rayon->premier = produit;
+            rayon->premier->suivant = produit;
+            produit->suivant = NULL;
+            rayon->nombre_produits = rayon->nombre_produits + 1;
             return 1;
         }
-
-        else
+        else if ((produit->prix > rayon->premier->prix) && (strcmp(produit->marque,rayon->premier->marque) != 0))
         {
-            while (produit->prix > temp->prix)
-                {
-                    temp=temp2;    //on se décalle dans la liste
-                    temp2 = temp2->suivant;
-                }
-           if (temp2->suivant != NULL)
-                {
-                    temp->suivant = produit;
-                    produit->suivant=temp2;
-                    return 1;
-                }
-            else
+            T_Produit *temp = rayon->premier;
+            T_Produit *temp2 = temp->suivant;
+            if ((temp2->suivant == NULL) && (produit->prix <= temp2->prix) && (strcmp(produit->marque,temp2->marque) != 0))
             {
+                temp->suivant = produit;
+                produit->suivant = temp2;
+                rayon->nombre_produits = rayon->nombre_produits + 1;
+                return 1;
+            }
+            while ((produit->prix > temp2->prix) && (temp2->suivant != NULL) && (strcmp(produit->marque,temp2->marque) != 0))
+            {
+                temp = temp2;
+                temp2 = temp2->suivant;
+            }
+            if ((strcmp(produit->marque,temp2->marque) == 0))
+                    return 0;
+
+            if ((temp2->suivant != NULL) && (produit->prix <= temp2->prix))
+            {
+                temp->suivant = produit;
+                produit->suivant = temp2;
+                rayon->nombre_produits = rayon->nombre_produits + 1;
+                return 1;
+            }
+            else if ((temp2->suivant == NULL) && (produit->prix <= temp2->prix))
+            {
+                temp->suivant = produit;
+                produit->suivant = temp2;
+                rayon->nombre_produits = rayon->nombre_produits + 1;
+                return 1;
+            }
+            else if ((temp2->suivant == NULL) && (produit->prix > temp2->prix))
+            {
+                produit->suivant = NULL;
                 temp2->suivant = produit;
-                produit->suivant=NULL;
+                rayon->nombre_produits = rayon->nombre_produits + 1;
                 return 1;
             }
         }
-    }
-
 
 }
 
 
 void afficherMagasin(T_Magasin *magasin)  //OK
 {
-printf("Nom \t| Nombre de produits \n");
+printf("Nom \t\t| Nombre de produits \n");
 T_Rayon *temp = magasin->premier;
 
 while (temp != NULL)
     {
-    printf("%s\t|",temp->nom_rayon);
+    printf("%s\t\t|",temp->nom_rayon);
     printf("%d\n", temp->nombre_produits);
     temp = temp->suivant;
     }
@@ -173,14 +193,14 @@ while (temp != NULL)
 
 void afficherRayon(T_Rayon *rayon)
 {
-printf("Marque \t| Prix \t| Qualite \t| Quantite en stock \n");
+printf("Marque \t\t| Prix \t\t| Qualite \t\t| Quantite en stock \n");
 T_Produit *temp = rayon->premier;   //a quoi ca sert ? pourquoi on pointe sur le premier produit alors que Temp est un pointeur sur rayon ?
                                      // Roman, on se place sur le premier produit(on initialise temp) pour ensuite pouvoir modifier temp, et pas le rayon lui même
 //Par contre tu as raison, j'enlève les "temp->premier" et je mets juste temp
 while (temp != NULL){
-    printf("%s\t|",temp->marque);
-    printf("%f\t|",temp->prix);
-    printf("%c\t|", temp->qualite);
+    printf("%s\t\t|",temp->marque);
+    printf("%f\t\t|",temp->prix);
+    printf("%c\t\t|", temp->qualite);
     printf("%d\n", temp->quantite_en_stock);
     temp = temp->suivant;
 }
