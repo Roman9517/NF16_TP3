@@ -32,7 +32,7 @@ nouveau->premier=NULL;
 return (nouveau);
 }
 
-int ajouterRayon(T_Magasin *magasin,T_Rayon *rayon)
+int ajouterRayon(T_Magasin *magasin,T_Rayon *rayon) //OK
 {
 
 
@@ -50,23 +50,41 @@ int ajouterRayon(T_Magasin *magasin,T_Rayon *rayon)
         return (1);
         }
 
-
+   else if (magasin->premier->suivant==NULL)
+    {
+        magasin->premier->suivant=rayon;
+        rayon->suivant=NULL;
+        return 1;
+    }
     else if (strcmp(rayon->nom_rayon,magasin->premier->nom_rayon)>0)  //si pas ajout en tete de liste
     {   T_Rayon *temp=magasin->premier;   //probleme si magasin est vide, on initialise sur NULL donc ca bug
         T_Rayon *temp2=temp->suivant;       // de meme ici
-        while ((strcmp(rayon->nom_rayon,temp->nom_rayon)>0) && temp2->suivant!=NULL)   //tant que nom plus bas dans alphabet
+        if ((temp2->suivant == NULL) && (strcmp(rayon->nom_rayon,temp2->nom_rayon)<0) )
+        {
+            temp->suivant = rayon;
+            rayon->suivant = temp2;
+            return 1;
+        }
+        while ((strcmp(rayon->nom_rayon,temp2->nom_rayon)>0) && temp2->suivant!=NULL)   //tant que nom plus bas dans alphabet
             {
             temp=temp2;    //on se décalle dans la liste
             temp2 = temp2->suivant;
             }
-        if  ((temp2->suivant != NULL) || strcmp(temp2->nom_rayon, rayon->nom_rayon)!=0)   // si on est pas à la fin et que le nom de temp2 différent de notre rayon
+        if  ((temp2->suivant != NULL) && strcmp(temp2->nom_rayon, rayon->nom_rayon)!=0)   // si on est pas à la fin et que le nom de temp2 différent de notre rayon
         {
             temp->suivant = rayon;
             rayon->suivant = temp2;  //on insere notre rayon
             return(1);
         }
+        else if ((temp2->suivant == NULL) && (strcmp(rayon->nom_rayon,temp2->nom_rayon)<0) )
+        {
+            temp->suivant = rayon;
+            rayon->suivant = temp2;
+            return 1;
+        }
         else if (temp2->suivant == NULL && strcmp(temp2->nom_rayon,rayon->nom_rayon)!=0)    //sinon si on est a la fin de la liste et que les noms sont différents, alors on insere notre rayon a la fin
             {
+                rayon->suivant = NULL;
                 temp2->suivant=rayon;  //rayon->suivant est initié a null de base!
                 return(1);
             }
@@ -138,16 +156,16 @@ int ajouterProduit(T_Rayon *rayon,T_Produit *produit)
 }
 
 
-void afficherMagasin(T_Magasin *magasin)
+void afficherMagasin(T_Magasin *magasin)  //OK
 {
 printf("Nom \t| Nombre de produits \n");
-T_Magasin *temp = magasin;
+T_Rayon *temp = magasin->premier;
 
-while (temp->premier != NULL)
+while (temp != NULL)
     {
-    printf("%s\t|",temp->premier->nom_rayon);
-    printf("%d\n", temp->premier->nombre_produits);
-    temp->premier = temp->premier->suivant;
+    printf("%s\t|",temp->nom_rayon);
+    printf("%d\n", temp->nombre_produits);
+    temp = temp->suivant;
     }
 }
 
@@ -173,9 +191,9 @@ int supprimerProduit(T_Rayon *rayon, char *marque_produit)
 {
 
 if (rayon->premier==NULL) return 0;    // pareil regarder les "if" et "else" car on risque de rien retourner
-else if(rayon->premier->suivant==NULL)     
+else if(rayon->premier->suivant==NULL)
 {
-        if(strcmpy(rayon->premier->marque, marque_produit)==0)
+        if(strcpy(rayon->premier->marque, marque_produit)==0)
         {
         free(rayon->premier);
         rayon->premier=NULL;
