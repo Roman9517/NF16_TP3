@@ -34,14 +34,13 @@ return (nouveau);
 
 int ajouterRayon(T_Magasin *magasin,T_Rayon *rayon)
 {
-T_Rayon *temp=magasin->premier;   //probleme si magasin est vide, on initialise sur NULL donc ca bug
-T_Rayon *temp2=temp->suivant;       // de meme ici
+
 
     if (magasin->premier==NULL)
         {
             magasin->premier=rayon;
             rayon->suivant=NULL;
-            return 1;   // on l'avait oublié
+            return 1;   // on l'avait oubliÃ©
         }
 
    else if(strcmp(rayon->nom_rayon,magasin->premier->nom_rayon)<0)   // Ajout en tete de liste
@@ -53,20 +52,22 @@ T_Rayon *temp2=temp->suivant;       // de meme ici
 
 
     else if (strcmp(rayon->nom_rayon,magasin->premier->nom_rayon)>0)  //si pas ajout en tete de liste
-        {while ((strcmp(rayon->nom_rayon,temp->nom_rayon)>0) && temp2->suivant!=NULL)   //tant que nom plus bas dans alphabet
+    {   T_Rayon *temp=magasin->premier;   //probleme si magasin est vide, on initialise sur NULL donc ca bug
+        T_Rayon *temp2=temp->suivant;       // de meme ici
+        while ((strcmp(rayon->nom_rayon,temp->nom_rayon)>0) && temp2->suivant!=NULL)   //tant que nom plus bas dans alphabet
             {
-            temp=temp2;    //on se décalle dans la liste
+            temp=temp2;    //on se dÃ©calle dans la liste
             temp2 = temp2->suivant;
             }
-        if  ((temp2->suivant != NULL) || strcmp(temp2->nom_rayon, rayon->nom_rayon)!=0)   // si on est pas à la fin et que le nom de temp2 différent de notre rayon
+        if  ((temp2->suivant != NULL) || strcmp(temp2->nom_rayon, rayon->nom_rayon)!=0)   // si on est pas Ã  la fin et que le nom de temp2 diffÃ©rent de notre rayon
         {
             temp->suivant = rayon;
             rayon->suivant = temp2;  //on insere notre rayon
             return(1);
         }
-        else if (temp2->suivant == NULL && strcmp(temp2->nom_rayon,rayon->nom_rayon)!=0)    //sinon si on est a la fin de la liste et que les noms sont différents, alors on insere notre rayon a la fin
+        else if (temp2->suivant == NULL && strcmp(temp2->nom_rayon,rayon->nom_rayon)!=0)    //sinon si on est a la fin de la liste et que les noms sont diffÃ©rents, alors on insere notre rayon a la fin
             {
-                temp2->suivant=rayon;  //rayon->suivant est initié a null de base!
+                temp2->suivant=rayon;  //rayon->suivant est initiÃ© a null de base!
                 return(1);
             }
         }
@@ -91,14 +92,14 @@ int ajouterProduit(T_Rayon *rayon,T_Produit *produit)
         T_Produit *temp=rayon->premier;
         T_Produit *temp2=temp;
     do {
-        temp=temp2;  //on se décalle dans la liste
+        temp=temp2;  //on se dÃ©calle dans la liste
         temp2 = temp2->suivant;
         if (/*(strcmp(temp->marque, produit->marque)==0) ||*/ (strcmp(temp2->marque, produit->marque)==0))
         {
-            return 0; //on s'arrete ici si la marque existe déjà
+            return 0; //on s'arrete ici si la marque existe dÃ©jÃ 
         }
        } while (temp2->suivant != NULL);
-    //arrivé ici, nous sommes sur de ne pas avoir 2 fois la même marque
+    //arrivÃ© ici, nous sommes sur de ne pas avoir 2 fois la mÃªme marque
 
 
     temp=rayon->premier; // on reinitialise nos variables
@@ -115,7 +116,7 @@ int ajouterProduit(T_Rayon *rayon,T_Produit *produit)
         {
             while (produit->prix > temp->prix)
                 {
-                    temp=temp2;    //on se décalle dans la liste
+                    temp=temp2;    //on se dÃ©calle dans la liste
                     temp2 = temp2->suivant;
                 }
            if (temp2->suivant != NULL)
@@ -155,14 +156,15 @@ while (temp->premier != NULL)
 void afficherRayon(T_Rayon *rayon)
 {
 printf("Marque \t| Prix \t| Qualite \t| Quantite en stock \n");
-T_Rayon *temp = rayon->premier;   //a quoi ca sert ? pourquoi on pointe sur le premier produit alors que Temp est un pointeur sur rayon ?
-
-while (temp->premier != NULL){
-    printf("%s\t|",temp->premier->marque);
-    printf("%f\t|",temp->premier->prix);
-    printf("%c\t|", temp->premier->qualite);
-    printf("%d\n", temp->premier->quantite_en_stock);
-    temp->premier = temp->premier->suivant;
+T_Produit *temp = rayon->premier;   //a quoi ca sert ? pourquoi on pointe sur le premier produit alors que Temp est un pointeur sur rayon ?
+                                     // Roman, on se place sur le premier produit(on initialise temp) pour ensuite pouvoir modifier temp, et pas le rayon lui mÃªme
+//Par contre tu as raison, j'enlÃ¨ve les "temp->premier" et je mets juste temp
+while (temp != NULL){
+    printf("%s\t|",temp->marque);
+    printf("%f\t|",temp->prix);
+    printf("%c\t|", temp->qualite);
+    printf("%d\n", temp->quantite_en_stock);
+    temp = temp->suivant;
 }
 }
 
@@ -171,10 +173,15 @@ int supprimerProduit(T_Rayon *rayon, char *marque_produit)
 {
 
 if (rayon->premier==NULL) return 0;    // pareil regarder les "if" et "else" car on risque de rien retourner
-else if(rayon->premier->suivant==NULL)
+else if(rayon->premier->suivant==NULL)     
 {
+        if(strcmpy(rayon->premier->marque, marque_produit)==0)
+        {
         free(rayon->premier);
         rayon->premier=NULL;
+        return 1;
+        }
+        else return 0;  //Si un seul Ã©lÃ©ment, et c'est pas celui qu'on veut
 }
 
 else
@@ -191,13 +198,13 @@ if (strcmp(temp->marque, marque_produit)==0)  //supprime la tete de liste
     }
 
 else {
-        while((strcmp(temp2->marque,marque_produit)>0) && (temp2 != NULL))   //Tant que on a pas le même nom de marque et qu'on est pas à la fin de la liste
+        while((strcmp(temp2->marque,marque_produit)>0) && (temp2 != NULL))   //Tant que on a pas le mÃªme nom de marque et qu'on est pas Ã  la fin de la liste
             {
                 temp=temp2;
                 temp2= temp2->suivant;      //On avance
             }
 
-        if (strcmp(temp2->marque, marque_produit)==0)       //Si on a trouvé la marque, on supprime temp2 (ça marche même si temp2 est la queue de liste
+        if (strcmp(temp2->marque, marque_produit)==0)       //Si on a trouvÃ© la marque, on supprime temp2 (Ã§a marche mÃªme si temp2 est la queue de liste
             {
               temp->suivant=temp2->suivant;
               free(temp2);
@@ -221,8 +228,13 @@ int supprimerRayon(T_Magasin *magasin, char *nom_rayon)
 if (magasin->premier==NULL) return 0;
 else if (magasin->premier->suivant==NULL)    // meme probleme
 {
+    if(strcpy(magasin->premier->nom_rayon,nom_rayon)==0)
+    {
     free(magasin->premier);
     magasin->premier==NULL; // == ou juste = ?
+    return 1;
+    }
+    else return 0;
 }
 else
 {
@@ -237,14 +249,14 @@ if (strcmp(temp->nom_rayon, nom_rayon)==0)  //supprime la tete de liste
     }
 
 else {
-        while((strcmp(temp2->nom_rayon,nom_rayon)>0) && (temp2->suivant != NULL))   //Tant que on a pas le même nom de rayon et qu'on est pas à la fin de la liste
+        while((strcmp(temp2->nom_rayon,nom_rayon)>0) && (temp2->suivant != NULL))   //Tant que on a pas le mÃªme nom de rayon et qu'on est pas Ã  la fin de la liste
             {
                 temp=temp2;
                 temp2= temp2->suivant;      //On avance
                 temp->suivant=temp2;
             }
 
-        if (strcmp(temp2->nom_rayon, nom_rayon)==0)       //Si on a trouvé le rayon, on supprime temp2 (ça marche même si temp2 est la queue de liste)
+        if (strcmp(temp2->nom_rayon, nom_rayon)==0)       //Si on a trouvÃ© le rayon, on supprime temp2 (Ã§a marche mÃªme si temp2 est la queue de liste)
             {
               temp->suivant=temp2->suivant;
               free(temp2);
@@ -267,9 +279,9 @@ void RechercheProduits(T_Magasin *magasin, float prix_min, float prix_max)
 printf("Marque \t| Prix\t| Qualite\t| Quantite en stock\t| Rayon | \n");
 T_Rayon *temp=magasin->premier;
 T_Produit *temp1=temp->premier;
-while(temp!=NULL) //tant qu'on es pas à la fin de la liste des magasins
+while(temp!=NULL) //tant qu'on es pas Ã  la fin de la liste des magasins
     {
-    while ((temp1->prix < prix_max) && (temp1->prix < prix_min))  //Tant qu'on est à un prix trop bas mais en dessous de prix_max
+    while ((temp1->prix < prix_max) && (temp1->prix < prix_min))  //Tant qu'on est Ã  un prix trop bas mais en dessous de prix_max
         {
             temp1=temp1->suivant;   //on avance dans le rayon
         }
@@ -279,12 +291,12 @@ while(temp!=NULL) //tant qu'on es pas à la fin de la liste des magasins
             temp1=temp1->suivant; //on passe au produit suivant
         }
    temp=temp->suivant;           //on passe au rayon suivant
-   temp1=temp->premier;          //on reinitialise temp1 pour être au debut du rayon
+   temp1=temp->premier;          //on reinitialise temp1 pour Ãªtre au debut du rayon
     }
 }
 
 //faire si magasin->premier->premier->prix > prix_max alors sortir, Omega(1)
-//J'ai l'impression que c'est juste quand même ce que j'ai fait
+//J'ai l'impression que c'est juste quand mÃªme ce que j'ai fait
 
 T_Produit *triprix(T_Produit *p1, T_Produit *p2)
 {
@@ -314,7 +326,7 @@ T_Rayon tab[2] ;
 int i;
 for (i=0; i<2; i++)
 {
-    T_Rayon *temp=magasin->premier;          //On créer deux sites de stockage et on cherche les rayons à fusionner
+    T_Rayon *temp=magasin->premier;          //On crÃ©er deux sites de stockage et on cherche les rayons Ã  fusionner
    printf("quel nom de rayon ?");
     scanf("%s",nom);
     while (strcmp(temp->nom_rayon, nom)!=0)
@@ -332,20 +344,20 @@ temp = magasin->premier ;
 temp1=tab[0].premier;
 temp2=tab[1].premier;
 
-while (temp1!=NULL && temp2!=NULL)          //On compare les prix des deux rayons à chaque étape
+while (temp1!=NULL && temp2!=NULL)          //On compare les prix des deux rayons Ã  chaque Ã©tape
 {
     temp->premier=triprix(temp1,temp2);
     temp->premier=temp->premier->suivant;
 }
 
-while (temp1==NULL && temp2!=NULL)          //Si on a finit le premier rayon, mais qu'il reste des produits dans le deuxième
+while (temp1==NULL && temp2!=NULL)          //Si on a finit le premier rayon, mais qu'il reste des produits dans le deuxiÃ¨me
 {
     temp->premier=temp2;
     temp2=temp2->suivant;
     temp->premier=temp->premier->suivant;
 }
 
-while (temp2==NULL && temp1!=NULL)          //Si on a finit le deuxième rayon, mais qu'il reste des produits dans le premier
+while (temp2==NULL && temp1!=NULL)          //Si on a finit le deuxiÃ¨me rayon, mais qu'il reste des produits dans le premier
 {
     temp->premier=temp1;
     temp1=temp1->suivant;
