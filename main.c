@@ -97,6 +97,10 @@ void main()
 
             case 9 :   printf("Au revoir\n");
                         break;
+                    
+                    
+           case 10 : fusionnerRayons(mag);
+                      break;
 
 
             default :  printf("Erreur : saisir un choix entre 1 et 9");
