@@ -105,7 +105,7 @@ T_Rayon *rechercheRayon (char *nom, T_Magasin *mag)  //OK
 }
 
 
-int ajouterProduit(T_Rayon *rayon,T_Produit *produit) //OK
+int ajouterProduit(T_Rayon *rayon,T_Produit *produit) //A Changer ? On a pas parcouru tout le tableau pour savoir si la marque était déjà présente..
 {
 
 
@@ -194,9 +194,7 @@ while (temp != NULL)
 void afficherRayon(T_Rayon *rayon)   //OK, juste faire la mise en page
 {
 printf("Marque \t\t| Prix \t\t| Qualite \t\t| Quantite en stock \n");
-T_Produit *temp = rayon->premier;   //a quoi ca sert ? pourquoi on pointe sur le premier produit alors que Temp est un pointeur sur rayon ?
-                                     // Roman, on se place sur le premier produit(on initialise temp) pour ensuite pouvoir modifier temp, et pas le rayon lui même
-//Par contre tu as raison, j'enlève les "temp->premier" et je mets juste temp
+T_Produit *temp = rayon->premier;
 while (temp != NULL){
     printf("%s\t\t|",temp->marque);
     printf("%f\t\t|",temp->prix);
@@ -304,34 +302,34 @@ else
 
 
 
-void RechercheProduits(T_Magasin *magasin, float prix_min, float prix_max)
+void RechercheProduits(T_Magasin *magasin, float prix_min, float prix_max)   //Bizarre, à chaque fois ça m'affiche que le premier produit, que son prix soit inférieur à prix_min ou non
 {
 printf("Marque \t| Prix\t| Qualite\t| Quantite en stock\t| Rayon | \n");
 T_Rayon *temp=magasin->premier;
-T_Produit *temp1=temp->premier;
+T_Produit *temp1;
 while(temp!=NULL) //tant qu'on es pas à la fin de la liste des magasins
     {
-    while ((temp1->prix < prix_max) && (temp1->prix < prix_min))  //Tant qu'on est à un prix trop bas mais en dessous de prix_max
+    temp1=temp->premier;
+    while  ((temp1->prix < prix_min) && (temp1!=NULL))  //Tant qu'on est à un prix trop bas mais en dessous de prix_max
         {
             temp1=temp1->suivant;   //on avance dans le rayon
         }
-    while ((temp1!=NULL) && (temp1->prix < prix_max)) //Tant qu'on est dans la fourchette pour ce rayon
+    while ((temp1!=NULL) && (temp1->prix < prix_max)&& (temp1->prix > prix_min)) //Tant qu'on est dans la fourchette pour ce rayon
         {
             printf("%s \t| %f\t| %c\t| %d\t| %s|\n", temp1->marque, temp1->prix, temp1->qualite, temp1->quantite_en_stock, temp->nom_rayon);
             temp1=temp1->suivant; //on passe au produit suivant
         }
    temp=temp->suivant;           //on passe au rayon suivant
-   temp1=temp->premier;          //on reinitialise temp1 pour être au debut du rayon
     }
 }
 
 
 
-T_Produit *triprix(T_Produit *p1, T_Produit *p2)
+T_Produit *triprix(T_Produit *p1, T_Produit *p2)  //J'ai l'impression que p1->suivant et p2->suivant ne sont pas modifiés hors de la fonction
 {
 T_Produit *temp=malloc(sizeof(T_Produit));
 
-{
+
    if (p1->prix <= p2->prix)
    {
        temp=p1;
@@ -342,36 +340,36 @@ T_Produit *temp=malloc(sizeof(T_Produit));
             temp=p2;
             p2=p2->suivant;
         }
-}
+
 return temp;
 }
 
 
 
-void fusionnerRayons(T_Magasin *magasin)
+void fusionnerRayons(T_Magasin *magasin)    //Une fois que j'ai rentré les noms des deux rayons à fusionner, le programme reste bloqué et n'avance plus.
 {
 char nom[20];
-T_Rayon tab[2] ;
+T_Rayon *tab[2] ;
 int i;
 for (i=0; i<2; i++)
 {
     T_Rayon *temp=magasin->premier;          //On créer deux sites de stockage et on cherche les rayons à fusionner
-   printf("quel nom de rayon ?");
+   printf("quel nom de rayon ?\n");
     scanf("%s",nom);
     while (strcmp(temp->nom_rayon, nom)!=0)
     {
     temp=temp->suivant;
     }
     if (temp!=NULL)
-        tab[i]=*temp;           //On range les 2 rayons dans un tableau
+        tab[i]=temp;           //On range les 2 rayons dans un tableau
 }
 
-T_Rayon *temp=malloc(sizeof(T_Rayon));
-T_Produit *temp1=malloc(sizeof(T_Produit));
-T_Produit *temp2=malloc(sizeof(T_Produit));
+T_Rayon *temp; //=malloc(sizeof(T_Rayon));
+T_Produit *temp1; //=malloc(sizeof(T_Produit));
+T_Produit *temp2; //=malloc(sizeof(T_Produit));
 temp = magasin->premier ;
-temp1=tab[0].premier;
-temp2=tab[1].premier;
+temp1=tab[0]->premier;
+temp2=tab[1]->premier;
 
 while (temp1!=NULL && temp2!=NULL)          //On compare les prix des deux rayons à chaque étape
 {
@@ -392,5 +390,6 @@ while (temp2==NULL && temp1!=NULL)          //Si on a finit le deuxième rayon, 
     temp1=temp1->suivant;
     temp->premier=temp->premier->suivant;
 }
+return;
 }
 
