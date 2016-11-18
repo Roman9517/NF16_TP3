@@ -348,7 +348,7 @@ void rechercheProduits(T_Magasin *magasin, float prix_min, float prix_max){
 
 
 
-/* T_Produit *triprix(T_Produit *p1, T_Produit *p2)  
+/* T_Produit *triprix(T_Produit *p1, T_Produit *p2)   
 {
 T_Produit *temp=malloc(sizeof(T_Produit));
 
@@ -369,7 +369,7 @@ return temp;
 
 
 
-/*void fusionnerRayons(T_Magasin *magasin)    //Une fois que j'ai rentré les noms des deux rayons à fusionner, le programme reste bloqué et n'avance plus.
+/*void fusionnerRayons(T_Magasin *magasin)   //Fonction non terminé et remplacé par celle d'après, mais complexité aurait été meilleure.
 {
 char nom[20];
 T_Rayon *tab[2] ;
@@ -420,7 +420,7 @@ while (temp2==NULL && temp1!=NULL)          //Si on a finit le deuxième rayon, 
     tmp=tmp->suivant;
 }
 return;
-} */
+} */ 
 
 
 
