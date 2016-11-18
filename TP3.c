@@ -364,32 +364,39 @@ for (i=0; i<2; i++)
         tab[i]=temp;           //On range les 2 rayons dans un tableau
 }
 
-T_Rayon *temp; //=malloc(sizeof(T_Rayon));
+T_Rayon *temp=malloc(sizeof(T_Rayon));
 T_Produit *temp1; //=malloc(sizeof(T_Produit));
 T_Produit *temp2; //=malloc(sizeof(T_Produit));
 temp = magasin->premier ;
 temp1=tab[0]->premier;
 temp2=tab[1]->premier;
 
+T_Produit *tmp=malloc(sizeof(T_Produit));
+tmp=triprix(temp1,temp2);
+temp->premier=tmp;
+
 while (temp1!=NULL && temp2!=NULL)          //On compare les prix des deux rayons à chaque étape
 {
-    temp->premier=triprix(temp1,temp2);
-    temp->premier=temp->premier->suivant;
+    T_Produit *tmp1=malloc(sizeof(T_Produit));
+    tmp1=triprix(temp1,temp2);
+    tmp->suivant=tmp1;
+    tmp = tmp->suivant;
 }
 
 while (temp1==NULL && temp2!=NULL)          //Si on a finit le premier rayon, mais qu'il reste des produits dans le deuxième
 {
-    temp->premier=temp2;
+    tmp=temp2;
     temp2=temp2->suivant;
-    temp->premier=temp->premier->suivant;
+    tmp=tmp->suivant;
 }
 
 while (temp2==NULL && temp1!=NULL)          //Si on a finit le deuxième rayon, mais qu'il reste des produits dans le premier
 {
-    temp->premier=temp1;
+    tmp=temp1;
     temp1=temp1->suivant;
-    temp->premier=temp->premier->suivant;
+    tmp=tmp->suivant;
 }
 return;
 }
+
 
