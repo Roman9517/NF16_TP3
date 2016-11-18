@@ -400,3 +400,29 @@ return;
 }
 
 
+
+void fusionnerRayonsBis(T_Magasin *magasin)
+{
+    char nom1[20];
+    char nom2[20];
+    printf("quel rayon ?\n");
+    scanf("%s", nom1);
+    T_Rayon *rayon1=magasin->premier;
+    while(strcmp(rayon1->nom_rayon, nom1)!=0)
+    {
+        rayon1=rayon1->suivant;
+    }
+    printf("quel rayon ?\n");
+    scanf("%s", nom2);
+    T_Rayon *rayon2 =magasin->premier;
+    while(strcmp(rayon2->nom_rayon, nom2)!=0)
+    {
+        rayon2=rayon2->suivant;
+    }
+    T_Produit *prod = rayon2->premier;
+    while(prod != NULL)
+    {
+        ajouterProduit(rayon1, prod);
+        prod=prod->suivant;
+    }
+}
