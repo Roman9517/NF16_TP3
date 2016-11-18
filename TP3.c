@@ -425,4 +425,5 @@ void fusionnerRayonsBis(T_Magasin *magasin)
         ajouterProduit(rayon1, prod);
         prod=prod->suivant;
     }
+    supprimerRayon(rayon2);
 }
