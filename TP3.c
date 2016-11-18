@@ -302,30 +302,53 @@ else
 
 
 
-void RechercheProduits(T_Magasin *magasin, float prix_min, float prix_max)   //Bizarre, à chaque fois ça m'affiche que le premier produit, que son prix soit inférieur à prix_min ou non
-{
-printf("Marque \t| Prix\t| Qualite\t| Quantite en stock\t| Rayon | \n");
-T_Rayon *temp=magasin->premier;
-T_Produit *temp1;
-while(temp!=NULL) //tant qu'on es pas à la fin de la liste des magasins
-    {
-    temp1=temp->premier;
-    while  ((temp1->prix < prix_min) && (temp1!=NULL))  //Tant qu'on est à un prix trop bas mais en dessous de prix_max
-        {
-            temp1=temp1->suivant;   //on avance dans le rayon
-        }
-    while ((temp1!=NULL) && (temp1->prix < prix_max)&& (temp1->prix > prix_min)) //Tant qu'on est dans la fourchette pour ce rayon
-        {
-            printf("%s \t| %f\t| %c\t| %d\t| %s|\n", temp1->marque, temp1->prix, temp1->qualite, temp1->quantite_en_stock, temp->nom_rayon);
-            temp1=temp1->suivant; //on passe au produit suivant
-        }
-   temp=temp->suivant;           //on passe au rayon suivant
-    }
+void rechercheProduits(T_Magasin *magasin, float prix_min, float prix_max){
+	T_Rayon *rayon=magasin->premier;
+	T_Rayon *tete=(T_Rayon *)malloc(sizeof(T_Rayon));
+	T_Rayon *tmp=(T_Rayon*)malloc(sizeof(T_Rayon));
+	T_Rayon *tmp1=(T_Rayon*)malloc(sizeof(T_Rayon));
+	T_Rayon *tmp2=(T_Rayon*)malloc(sizeof(T_Rayon));
+	T_Produit *produit=rayon->premier;
+	tete=NULL;
+	while(rayon!=NULL){
+		produit=rayon->premier;
+		while(produit!=NULL){
+			if((produit->prix<=prix_max)&&(produit->prix>=prix_min)){
+				tmp=creerRayon(rayon->nom_rayon);
+				tmp->premier=produit;
+				if(tete==NULL)
+					tete=tmp;
+				else{
+					tmp1=tete;
+					while(tmp1!=NULL&&tmp1->premier->prix<produit->prix){
+						tmp2=tmp1;
+						tmp1=tmp1->suivant;
+					}
+					tmp->suivant=tmp1;
+					tmp2->suivant=tmp;
+				}
+			}
+			produit=produit->suivant;
+		}
+		rayon=rayon->suivant;
+	}
+	printf("Marque\t\tPrix\t\tQualite\t\tQuantite\tRayon\n");
+	tmp=tete;
+	while(tmp!=NULL){
+		printf("%s\t\t",tmp->premier->marque);
+		printf("%f\t",tmp->premier->prix);
+		printf("%c\t\t",tmp->premier->qualite);
+		printf("%d\t\t",tmp->premier->quantite_en_stock);
+		printf("%s\n",tmp->nom_rayon);
+		//printf("%s\t\t&f\t\t&c\t\t&d\t\t%s\n",tmp->premier->marque,tmp->premier->prix,tmp->premier->qual,tmp->premier->quantite_en_stock,tmp->nom_rayon);
+		tmp=tmp->suivant;
+	}
 }
 
 
 
-T_Produit *triprix(T_Produit *p1, T_Produit *p2)  //J'ai l'impression que p1->suivant et p2->suivant ne sont pas modifiés hors de la fonction
+
+/* T_Produit *triprix(T_Produit *p1, T_Produit *p2)  
 {
 T_Produit *temp=malloc(sizeof(T_Produit));
 
@@ -342,11 +365,11 @@ T_Produit *temp=malloc(sizeof(T_Produit));
         }
 
 return temp;
-}
+} */
 
 
 
-void fusionnerRayons(T_Magasin *magasin)    //Une fois que j'ai rentré les noms des deux rayons à fusionner, le programme reste bloqué et n'avance plus.
+/*void fusionnerRayons(T_Magasin *magasin)    //Une fois que j'ai rentré les noms des deux rayons à fusionner, le programme reste bloqué et n'avance plus.
 {
 char nom[20];
 T_Rayon *tab[2] ;
@@ -397,7 +420,7 @@ while (temp2==NULL && temp1!=NULL)          //Si on a finit le deuxième rayon, 
     tmp=tmp->suivant;
 }
 return;
-}
+} */
 
 
 
