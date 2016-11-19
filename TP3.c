@@ -450,3 +450,39 @@ void fusionnerRayonsBis(T_Magasin *magasin)
     }
     supprimerRayon(rayon2);
 }
+
+
+
+
+void fusionnerRayonsTer(T_Magasin *magasin)
+{
+    char nom1[20];
+    char nom2[20];
+    printf("quel rayon ?\n");
+    scanf("%s", nom1);
+    T_Rayon *rayon1=rechercheRayon(nom1, magasin);
+    printf("quel nom pour le second rayon ?\n");
+    scanf("%s", nom2);
+    T_Rayon *rayon2 =rechercheRayon(nom2, magasin);
+    if (rayon1->nombre_produits > rayon2->nombre_produits)    //On ajoute les produits dans le rayon en contenant le plus, pour avoir le moins d'opérations possibles à faire
+        {
+            T_Produit *prod = rayon2->premier;
+            while(prod != NULL)
+                {
+                    ajouterProduit(rayon1, prod);
+                    prod=prod->suivant;
+                }
+            supprimerRayon(magasin,rayon2);             //On supprime le rayon qu'on a fusionné dans l'autre
+        }
+    else
+        {
+            T_Produit *prod = rayon1->premier;
+            while(prod != NULL)
+                {
+                    ajouterProduit(rayon2, prod);
+                    prod=prod->suivant;
+                }
+            supprimerRayon(magasin,rayon1);
+        }
+}
+
