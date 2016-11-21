@@ -25,12 +25,15 @@ nouveau->premier=NULL;
 return (nouveau);
 }
 
-T_Magasin *creerMagasin(char *nom){
+T_Magasin *creerMagasin(char *nom)
+{
 T_Magasin *nouveau = malloc(sizeof(T_Magasin));
 strcpy(nouveau->nom, nom);
 nouveau->premier=NULL;
 return (nouveau);
 }
+
+
 
 int ajouterRayon(T_Magasin *magasin,T_Rayon *rayon) //OK
 {
@@ -105,7 +108,9 @@ T_Rayon *rechercheRayon (char *nom, T_Magasin *mag)  //OK
 }
 
 
-int ajouterProduit(T_Rayon *rayon,T_Produit *produit) //A Changer ? On a pas parcouru tout le tableau pour savoir si la marque était déjà présente..
+
+
+int ajouterProduit(T_Rayon *rayon,T_Produit *produit)
 {
 
 
@@ -117,7 +122,22 @@ int ajouterProduit(T_Rayon *rayon,T_Produit *produit) //A Changer ? On a pas par
         rayon->nombre_produits = rayon->nombre_produits + 1;
         return 1;
     }
-    else if ((produit->prix <= rayon->premier->prix) && (strcmp(produit->marque,rayon->premier->marque) != 0))
+
+    T_Produit *tmp = rayon ->premier;                           //Parcours de la liste pour voir si la marque est deja presente
+    while ((tmp !=NULL) && (strcmp(tmp->marque, produit->marque)!=0))
+    {
+        tmp=tmp->suivant;
+    }
+    if (strcmp(tmp->marque, produit->marque)==0)
+    {
+        printf("erreur marque deja presente");
+        return 0;
+    }
+
+
+    // Si on arrive ici, la marque n'est pas deja presente
+
+    if (produit->prix <= rayon->premier->prix)
              {
                  produit->suivant = rayon->premier;
                  rayon->premier = produit;
@@ -131,24 +151,23 @@ int ajouterProduit(T_Rayon *rayon,T_Produit *produit) //A Changer ? On a pas par
             rayon->nombre_produits = rayon->nombre_produits + 1;
             return 1;
         }
-        else if ((produit->prix > rayon->premier->prix) && (strcmp(produit->marque,rayon->premier->marque) != 0))
+
+    else if (produit->prix > rayon->premier->prix)
         {
             T_Produit *temp = rayon->premier;
             T_Produit *temp2 = temp->suivant;
-            if ((temp2->suivant == NULL) && (produit->prix <= temp2->prix) && (strcmp(produit->marque,temp2->marque) != 0))
+            if ((temp2->suivant == NULL) && (produit->prix <= temp2->prix))
             {
                 temp->suivant = produit;
                 produit->suivant = temp2;
                 rayon->nombre_produits = rayon->nombre_produits + 1;
                 return 1;
             }
-            while ((produit->prix > temp2->prix) && (temp2->suivant != NULL) && (strcmp(produit->marque,temp2->marque) != 0))
+            while ((produit->prix > temp2->prix) && (temp2->suivant != NULL))
             {
                 temp = temp2;
                 temp2 = temp2->suivant;
             }
-            if ((strcmp(produit->marque,temp2->marque) == 0))
-                    return 0;
 
             if ((temp2->suivant != NULL) && (produit->prix <= temp2->prix))
             {
@@ -174,6 +193,7 @@ int ajouterProduit(T_Rayon *rayon,T_Produit *produit) //A Changer ? On a pas par
         }
 
 }
+
 
 
 void afficherMagasin(T_Magasin *magasin)  //OK, juste faire la mise en page
@@ -332,14 +352,15 @@ void rechercheProduits(T_Magasin *magasin, float prix_min, float prix_max){
 		}
 		rayon=rayon->suivant;
 	}
-	printf("Marque\t\tPrix\t\tQualite\t\tQuantite\tRayon\n");
+    printf("| Marque \t\t | Prix \t | Qualite \t | Quantite en stock | Rayon \n");
+	printf("------------------------------------------------------------------\n");
 	tmp=tete;
 	while(tmp!=NULL){
-		printf("%s\t\t",tmp->premier->marque);
-		printf("%f\t",tmp->premier->prix);
-		printf("%c\t\t",tmp->premier->qualite);
-		printf("%d\t\t",tmp->premier->quantite_en_stock);
-		printf("%s\n",tmp->nom_rayon);
+		printf("| %-9s \t",tmp->premier->marque);
+		printf("| %0.2f \t",tmp->premier->prix);
+		printf("| %c \t\t",tmp->premier->qualite);
+		printf("| %d \t\t\t\t ",tmp->premier->quantite_en_stock);
+		printf("| %-5s \t \n",tmp->nom_rayon);
 		//printf("%s\t\t&f\t\t&c\t\t&d\t\t%s\n",tmp->premier->marque,tmp->premier->prix,tmp->premier->qual,tmp->premier->quantite_en_stock,tmp->nom_rayon);
 		tmp=tmp->suivant;
 	}
@@ -348,11 +369,9 @@ void rechercheProduits(T_Magasin *magasin, float prix_min, float prix_max){
 
 
 
-/* T_Produit *triprix(T_Produit *p1, T_Produit *p2)   
+/* T_Produit *triprix(T_Produit *p1, T_Produit *p2)
 {
 T_Produit *temp=malloc(sizeof(T_Produit));
-
-
    if (p1->prix <= p2->prix)
    {
        temp=p1;
@@ -363,7 +382,6 @@ T_Produit *temp=malloc(sizeof(T_Produit));
             temp=p2;
             p2=p2->suivant;
         }
-
 return temp;
 } */
 
@@ -386,18 +404,15 @@ for (i=0; i<2; i++)
     if (temp!=NULL)
         tab[i]=temp;           //On range les 2 rayons dans un tableau
 }
-
 T_Rayon *temp=malloc(sizeof(T_Rayon));
 T_Produit *temp1; //=malloc(sizeof(T_Produit));
 T_Produit *temp2; //=malloc(sizeof(T_Produit));
 temp = magasin->premier ;
 temp1=tab[0]->premier;
 temp2=tab[1]->premier;
-
 T_Produit *tmp=malloc(sizeof(T_Produit));
 tmp=triprix(temp1,temp2);
 temp->premier=tmp;
-
 while (temp1!=NULL && temp2!=NULL)          //On compare les prix des deux rayons à chaque étape
 {
     T_Produit *tmp1=malloc(sizeof(T_Produit));
@@ -405,14 +420,12 @@ while (temp1!=NULL && temp2!=NULL)          //On compare les prix des deux rayon
     tmp->suivant=tmp1;
     tmp = tmp->suivant;
 }
-
 while (temp1==NULL && temp2!=NULL)          //Si on a finit le premier rayon, mais qu'il reste des produits dans le deuxième
 {
     tmp=temp2;
     temp2=temp2->suivant;
     tmp=tmp->suivant;
 }
-
 while (temp2==NULL && temp1!=NULL)          //Si on a finit le deuxième rayon, mais qu'il reste des produits dans le premier
 {
     tmp=temp1;
@@ -420,7 +433,7 @@ while (temp2==NULL && temp1!=NULL)          //Si on a finit le deuxième rayon, 
     tmp=tmp->suivant;
 }
 return;
-} */ 
+} */
 
 
 
@@ -485,4 +498,3 @@ void fusionnerRayonsTer(T_Magasin *magasin)
             supprimerRayon(magasin,rayon1);
         }
 }
-
