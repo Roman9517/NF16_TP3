@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "tp4.c"
+
+
+
+
+void main()
+{
+    int choix, b, CID, annee;
+    char nom[NMAX], prenom[NMAX];
+    char sexe;
+    Tranche *abr;
+    do
+    {
+    printf("Que voulez vous faire ? : \n1 :initialiser un arbre\n2: Ajouter une Tranche\n3 : Ajouter un bénévole\n4 :Afficher les tranches d'ages\n5 : afficher les benevoles\n6 : Supprimer un bénévole\n7 : Supprimer une tranche\n8 : Aﬃcher les bénévoles d’honneur\n9 : Aﬃcher le nombre total de bénévoles\n10 : Actualiser l’ABR\n11 : Aﬃcher le pourcentage de bénévoles d’une tranche d’âge\n12 : Détruire l’arbre\n13 : quitter \n ")
+    scanf("%d", &choix);
+    switch(choix)
+    {
+        case 1 : abr=NULL;
+                 break;
+
+        case 2 :    printf("quelle borne sup ? \n");
+                    scanf("%d", &b);
+                    Tranche *tr=nouvelleTranche(b);
+                    abr=ajoutTranche(abr, b);
+                    break;
+
+        case 3 :
+                 printf("saisir le nom, prenom, sexe, CID, annee de naissance du benevole");
+                 scanf("%s %s %c %d %d", nom, prenom, &CID, &sexe, &annee);
+                 Benevole *ben=nouveauBen(nom, prenom, CID, sexe, annee);
+                 ben=insererBen(abr, ben);
+                 break;
+
+        case 4 : //la flemme
+                 break;
+
+        case 5 : printf("quelle borne sup ?\n");
+                 scanf("%d", &b);
+                 afficherTranche(abr, b);
+                 break;
+
+        case 6 : printf("quel CIN puis quelle annee de naissance?\n");
+                 scanf("%d %d", &CID, &annee);
+                 supprimerBen(abr, CID, annee);
+                 break;
+
+        case 7 : printf("quelle borne sup ?\n");
+                 scanf("%d", &b);
+                 supprimerTranche(abr, b);
+                 break;
+
+        case 8 : ListBenevoles *l=BenDhonneur(abr);
+                 Benevole *tmp=l->premier;
+                 afficherBen(tmp);
+                 break;
+
+        case 9 : printf("nombre total de benevoles : %d\n", totalBen(abr));
+                 break;
+
+        case 10 : //pas fait la fonction
+                  break;
+
+        case 11 :
+                  printf("quelle borne sup ?\n");
+                  scanf("%d", &b);
+                  printf("pourcentage de benevoles entre %d ans et %d ans : %f \n", b-4, b, pourcentageTranche(abr, b));
+                  break;
+
+        case 12 : //pas fait
+                  break;
+
+
+        case 13 : printf("au revoir\n");
+                  break;
+
+        default : printf("nombre non reconnu \n");
+                  break;
+
+    }
+    } while(choix!=13);
+}
