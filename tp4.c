@@ -288,12 +288,40 @@ ListBenevoles *BenDhonneur(Tranche *racine)
     }
 }
 
-//Q8 à faire
-/*int actualiser(Tranche *racine)
+
+int actualiser(Tranche *racine)
 {
     int nb=0;
-    while
-}*/
+    int b=21;
+    int max=bornemax(racine);
+    Tranche *tr;
+    Benevole *tmp, *tmp1;
+    while(b<=max )
+    {
+        if(tr=chercherTranche(racine, b)!=NULL)
+        {
+            tmp=tr->liste->premier;
+            while(tmp!=NULL && tmp->annee <=tr->BorneSup)
+            {
+                tmp=tmp->suivant;
+            }
+            while (tmp->annee > tr->BorneSup)
+            {
+                tmp1=tmp;
+                tmp=tmp->suivant;
+                insererBen(racine, tmp1);   //On insere a la bonne borne sup
+                free(tmp1); //on supprime de la liste actuelle
+                nb++;
+            }
+        }
+        b+=4;
+    }
+    return nb;
+}
+
+
+
+
 
 int totalBenTranche(Tranche *racine, int borneSup)
 {
@@ -373,7 +401,7 @@ ListeTranche *creerListeTranche()
     return l;
 }
 
-void afficherArbre(Tranche *racine)   //on fait un parcours_infixe  Ne marche pas encore
+/*void afficherArbre(Tranche *racine)   //on fait un parcours_infixe  Ne marche pas encore
 {
     if(racine!=NULL)
     {
@@ -404,4 +432,33 @@ void afficherArbre(Tranche *racine)   //on fait un parcours_infixe  Ne marche pa
                }
         }
     }
+}*/
+
+
+void afficherArbre(Tranche *racine)  //nouvelle tentative, pas fini
+{
+    if(racine!=NULL)
+    {
+        Tranche *courant=racine;
+        while(courant->filsD)
+        while(courant->flisG!=NULL)
+        {
+            courant=courant->filsG;
+        }
+        afficherTranche(racine, courant->BorneSup);   //on affiche le fils gauche
+        courant=courant->pere;
+        supprimerTranche(racine, courant->filsG->BorneSup); //on le supprime
+        if(courant->filsD==NULL)
+        {
+            afficherTranche(racine, courant->BorneSup);
+            courant=courant->pere;
+            supprimerTranche(racine, courant->flisG);
+        }
+        else
+        {
+            afficherTranche(racine, courant->BorneSup);
+            courant=courant->filsD;
+        }
+    }
 }
+
