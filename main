@@ -59,7 +59,7 @@ void main()
         case 9 : printf("nombre total de benevoles : %d\n", totalBen(abr));
                  break;
 
-        case 10 : //pas fait la fonction
+        case 10 : printf("nombre de benevoles actualisés : %d\n", actualiser(abr));
                   break;
 
         case 11 :
@@ -81,3 +81,4 @@ void main()
     }
     } while(choix!=13);
 }
+
