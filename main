@@ -13,7 +13,7 @@ void main()
     Tranche *abr;
     do
     {
-    printf("Que voulez vous faire ? : \n1 :initialiser un arbre\n2: Ajouter une Tranche\n3 : Ajouter un bénévole\n4 :Afficher les tranches d'ages\n5 : afficher les benevoles\n6 : Supprimer un bénévole\n7 : Supprimer une tranche\n8 : Aﬃcher les bénévoles d’honneur\n9 : Aﬃcher le nombre total de bénévoles\n10 : Actualiser l’ABR\n11 : Aﬃcher le pourcentage de bénévoles d’une tranche d’âge\n12 : Détruire l’arbre\n13 : quitter \n ")
+    printf("Que voulez vous faire ? : \n1 :initialiser un arbre\n2: Ajouter une Tranche\n3 : Ajouter un bénévole\n4 :Afficher les tranches d'ages\n5 : afficher les benevoles\n6 : Supprimer un bénévole\n7 : Supprimer une tranche\n8 : Aﬃcher les bénévoles d’honneur\n9 : Aﬃcher le nombre total de bénévoles\n10 : Actualiser l’ABR\n11 : Aﬃcher le pourcentage de bénévoles d’une tranche d’âge\n12 : Détruire l’arbre\n13 : quitter \n ");
     scanf("%d", &choix);
     switch(choix)
     {
@@ -51,7 +51,7 @@ void main()
                  supprimerTranche(abr, b);
                  break;
 
-        case 8 : ListBenevoles *l=BenDhonneur(abr);
+        case 8 : ListBenevoles *l=BenDhonneur(abr);   //probleme ici tu verras
                  Benevole *tmp=l->premier;
                  afficherBen(tmp);
                  break;
