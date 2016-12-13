@@ -22,7 +22,7 @@ Tranche *nouvelleTranche(int borneSup)
     Tranche *tr=malloc(sizeof(Tranche));
     tr->BorneSup=borneSup;
     tr->filsD=NULL;
-    tr->flisG=NULL;
+    tr->filsG=NULL;
     tr->pere=NULL;
     tr->liste=NULL;
     return tr;
@@ -41,6 +41,7 @@ ListBenevoles *nouvelleListe()
 
 Tranche *ajoutTranche(Tranche *racine, int borneSup)
 {
+    if(borneSup%5 ==0){  // on veut une borne sup tous les 5 ans (dans l'exemple en tout cas
     if (racine==NULL)
     {
         racine=nouvelleTranche(borneSup);
@@ -51,12 +52,28 @@ Tranche *ajoutTranche(Tranche *racine, int borneSup)
         Tranche *tr=nouvelleTranche(borneSup);
         Tranche *tmp=racine;
         Tranche *tmp1=racine;
-        while(tmp!=NULL && tmp->BorneSup != borneSup)
+        if((racine->filsD==NULL) && (racine->filsG==NULL))
+        {
+            if(borneSup > racine->BorneSup)
+            {
+                racine->filsD=tr;
+                tr->pere=racine;
+                return racine;
+            }
+            else if(borneSup < racine->BorneSup)
+            {
+                racine->filsG=tr;
+                tr->pere=racine;
+                return racine;
+            }
+            else return racine; //on a pas ajouté car la borne sup existe deja
+        }
+        while((tmp!=NULL) && (tmp->BorneSup != borneSup))
         {
             if (tmp->BorneSup > tr->BorneSup)
             {
                 tmp1=tmp;
-                tmp=tmp->flisG;
+                tmp=tmp->filsG;
             }
             else if (tmp->BorneSup < tr->BorneSup)
             {
@@ -64,15 +81,16 @@ Tranche *ajoutTranche(Tranche *racine, int borneSup)
                 tmp=tmp->filsD;
             }
         }
-        if (tmp->BorneSup != borneSup)   //Si le noeud n'existe pas déjà
+        if (tmp==NULL)   //Si le noeud n'existe pas déjà
         {
             tmp=tr;
             tr->pere=tmp1;
-            return tr;   //on retourne un pointeur vers le noeud qu'on a créé
+            return racine;
         }
         else //la tranche existe déjà
-            return tmp;
+            return racine;
 }
+    } return racine;
 }
 
 int anneeActuelle()
@@ -166,7 +184,7 @@ Benevole *chercherBen(Tranche *racine,int CIN, int *annee)
     while (tmp->BorneSup != b && tmp!=NULL)
     {
         if (tmp->BorneSup > b)
-            tmp=tmp->flisG;
+            tmp=tmp->filsG;
         else tmp=tmp->filsD;
     }
     if (tmp->BorneSup==b) //on a bien trouvé le bon noeud
@@ -196,7 +214,7 @@ Tranche *chercherTranche(Tranche *racine, int Bornesup )
     while (tmp->BorneSup != Bornesup && tmp!=NULL)
     {
         if (tmp->BorneSup > Bornesup)
-            tmp=tmp->flisG;
+            tmp=tmp->filsG;
         else tmp=tmp->filsD;
     }
     return tmp;
@@ -435,13 +453,13 @@ ListeTranche *creerListeTranche()
 }*/
 
 
-/*void afficherArbre(Tranche *racine)  //nouvelle tentative, pas fini
+void afficherArbre(Tranche *racine)  //nouvelle tentative, pas fini
 {
     if(racine!=NULL)
     {
         Tranche *courant=racine;
         while(courant->filsD)
-        while(courant->flisG!=NULL)
+        while(courant->filsG!=NULL)
         {
             courant=courant->filsG;
         }
@@ -452,7 +470,7 @@ ListeTranche *creerListeTranche()
         {
             afficherTranche(racine, courant->BorneSup);
             courant=courant->pere;
-            supprimerTranche(racine, courant->flisG);
+            supprimerTranche(racine, courant->filsG);
         }
         else
         {
@@ -460,23 +478,4 @@ ListeTranche *creerListeTranche()
             courant=courant->filsD;
         }
     }
-} */
-
-void afficherArbre(Tranche *racine)
-{
-    if (racine != NULL)
-    {
-        afficherArbre(racine->filsD);
-        if (racine->filsD != NULL)
-        {
-            printf(",");
-        }
-        printf("%d ", racine->BorneSup);
-        if (racine->flisG !=NULL)
-        {
-            printf(",");
-        }
-        afficherArbre(racine->flisG);
-    }
-
 }
