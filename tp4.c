@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "tp4.h"
 #include<time.h>
+#include <string.h>
 
 
 
@@ -25,7 +26,7 @@ Tranche *nouvelleTranche(int borneSup)
     tr->filsD=NULL;
     tr->filsG=NULL;
     tr->pere=NULL;
-    tr->liste=NULL;
+    tr->liste=nouvelleListe();
     return tr;
 }
 
@@ -42,7 +43,7 @@ ListBenevoles *nouvelleListe()
 
 Tranche *ajoutTranche(Tranche *racine, int borneSup)
 {
-    if(borneSup%5 ==0){  // on veut une borne sup tous les 5 ans (dans l'exemple en tout cas
+    if(borneSup%5 ==0){  // on veut une borne sup tous les 5 ans (dans l'exemple en tout cas)
     if (racine==NULL)
     {
         racine=nouvelleTranche(borneSup);
@@ -121,6 +122,7 @@ ListBenevoles *insererlist(Tranche *tr, Benevole *bene)
     {
         tr->liste->premier=bene;
         tr->liste->nb=1;
+        printf("nb=0\n");
         return bene;
     }
     else if (tr->liste->premier->annee >= bene->annee)  //ajout en tete
@@ -128,6 +130,7 @@ ListBenevoles *insererlist(Tranche *tr, Benevole *bene)
         bene->suivant=tr->liste->premier;
         tr->liste->nb++;
         tr->liste->premier=bene;
+        printf("entete\n");
         return bene;
     }
     else
@@ -143,6 +146,7 @@ ListBenevoles *insererlist(Tranche *tr, Benevole *bene)
         {
             tmp1->suivant=bene;
             tr->liste->nb++;
+            printf("queue\n");
             return tr->liste->premier;
         }
         else if(bene->CID!=tmp->CID || (strcmp(bene->nom, tmp->nom)!=0) || (strcmp(bene->prenom, tmp->prenom)!=0) || bene->sexe!=tmp->sexe || bene->annee!=tmp->annee)
@@ -150,6 +154,7 @@ ListBenevoles *insererlist(Tranche *tr, Benevole *bene)
             bene->suivant=tmp;
             tmp1->suivant=bene;
             tr->liste->nb++;
+            printf("autre\n");
             return tr->liste->premier;
         }
         else //on a pas ajouté mais on renvoie la liste telle quelle
@@ -166,15 +171,15 @@ Benevole *insererBen(Tranche *racine, Benevole *benevole)
     if (racine==NULL)
     {
         racine = nouvelleTranche(bs);
-        racine->liste->premier=benevole;
-        racine->liste->nb=1;
-        return racine;
+        racine->liste=insererlist(racine, benevole);
+        return racine->liste->premier;
     }
     else
     {
-        tr = ajoutTranche(racine,bs);  //Si la tranche existe déjà on ne la rajoute pas, c'est défini dans la fonction
+        racine = ajoutTranche(racine,bs); //Si la tranche existe déjà on ne la rajoute pas, c'est défini dans la fonction
+        tr=chercherTranche(racine, bs);
         tr->liste = insererlist(tr, benevole);
-        return benevole;
+        return tr->liste->premier;
     }
 }
 
@@ -491,7 +496,7 @@ void afficherArbre(Tranche *racine)
         {
             printf(",");
         }
-        printf("%d-%d ", (racine->BorneSup - 4), racine->BorneSup);
+        printf("%d ", racine->BorneSup);
         if (racine->filsG !=NULL)
         {
             printf(",");
