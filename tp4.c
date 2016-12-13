@@ -435,7 +435,7 @@ ListeTranche *creerListeTranche()
 }*/
 
 
-void afficherArbre(Tranche *racine)  //nouvelle tentative, pas fini
+/*void afficherArbre(Tranche *racine)  //nouvelle tentative, pas fini
 {
     if(racine!=NULL)
     {
@@ -460,5 +460,23 @@ void afficherArbre(Tranche *racine)  //nouvelle tentative, pas fini
             courant=courant->filsD;
         }
     }
-}
+} */
 
+void afficherArbre(Tranche *racine)
+{
+    if (racine != NULL)
+    {
+        afficherArbre(racine->filsD);
+        if (racine->filsD != NULL)
+        {
+            printf(",");
+        }
+        printf("%d ", racine->BorneSup);
+        if (racine->flisG !=NULL)
+        {
+            printf(",");
+        }
+        afficherArbre(racine->flisG);
+    }
+
+}
