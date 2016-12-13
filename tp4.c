@@ -73,11 +73,13 @@ Tranche *ajoutTranche(Tranche *racine, int borneSup)
             if (tmp->BorneSup > tr->BorneSup)
             {
                 tmp1=tmp;
+                tmp1->filsG=tmp;
                 tmp=tmp->filsG;
             }
             else if (tmp->BorneSup < tr->BorneSup)
             {
                 tmp1=tmp;
+                tmp1->filsD=tmp;
                 tmp=tmp->filsD;
             }
         }
