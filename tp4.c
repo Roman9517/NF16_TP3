@@ -491,7 +491,7 @@ void afficherArbre(Tranche *racine)
         {
             printf(",");
         }
-        printf("%d ", racine->BorneSup);
+        printf("%d-%d ", (racine->BorneSup - 4), racine->BorneSup);
         if (racine->filsG !=NULL)
         {
             printf(",");
