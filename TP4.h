@@ -90,3 +90,5 @@ int bornemax(Tranche *racine);
 ListeTranche *creerListeTranche();
 
 void afficherBen(Benevole *ben);
+
+void detruire_Arbre(Tranche* racine);
