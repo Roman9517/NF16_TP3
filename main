@@ -2,18 +2,28 @@
 #include <stdlib.h>
 #include "tp4.h"
 
+static void purger(void)
 
+{
+    int c;
+
+
+    while ((c = getchar()) != '\n' && c != EOF)
+
+    {}
+
+}
 
 
 void main()
 {
     int choix, b, CID, annee;
     char nom[NMAX], prenom[NMAX];
-    char sexe;
+    char sexe=' ';
     Tranche *abr;
     do
     {
-    printf("Que voulez vous faire ? : \n1 : Initialiser un arbre\n2 : Ajouter une tranche\n3 : Ajouter un benevole\n4 : Afficher les tranches d'ages\n5 : Afficher les benevoles\n6 : Supprimer un benevole\n7 : Supprimer une tranche\n8 : Afficher les benevoles d'honneur\n9 : Afficher le nombre total de benevoles\n10 : Actualiser l'ABR\n11 : Afficher le pourcentage de benevoles d'une tranche d'age\n12 : Detruire l'arbre\n13 : Quitter \n");
+    printf("Que voulez vous faire ? : \n1 : Initialiser un arbre\n2 : Ajouter une tranche\n3 : Ajouter un benevole\n4 : Afficher les tranches d'ages\n5 : Afficher les benevoles\n6 : Supprimer un benevole\n7 : Supprimer une tranche\n8 : Afficher les benevoles d’honneur\n9 : Afficher le nombre total de benevoles\n10 : Actualiser l'ABR\n11 : Afficher le pourcentage de benevoles d’une tranche d’age\n12 : Detruire l'arbre\n13 : Quitter \n ");
     scanf("%d", &choix);
     switch(choix)
     {
@@ -22,15 +32,23 @@ void main()
 
         case 2 :    printf("Quelle borne sup ? \n");
                     scanf("%d", &b);
-                    Tranche *tr=nouvelleTranche(b);
                     abr=ajoutTranche(abr, b);
                     break;
 
         case 3 :
-                 printf("saisir le nom, prenom, sexe, CID, annee de naissance du benevole \n");
-                 scanf("%s %s %c %d %d", nom, prenom, &CID, &sexe, &annee);
-                 Benevole *ben=nouveauBen(nom, prenom, CID, sexe, annee);
-                 ben=insererBen(abr, ben);
+                 /*printf("saisir le nom\n");
+                 scanf("%s", nom);
+                 printf("saisir le prenom\n");
+                 scanf("%s", prenom);
+                 printf("saisir le sexe\n");
+                 purger();
+                 scanf("%c", &sexe);
+                 printf("saisir le CID\n");
+                 scanf("%d", &CID);
+                 printf("saisir l'annee de naissance\n");
+                 scanf("%d", &annee); */
+                 //Benevole *ben=nouveauBen("", prenom, CID, sexe, annee);
+                 //ben=insererBen(abr, ben);
                  break;
 
         case 4 : //la flemme
