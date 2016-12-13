@@ -51,7 +51,9 @@ void main()
                  //ben=insererBen(abr, ben);
                  break;
 
-        case 4 : //la flemme
+        case 4 : printf("Voici l'arbre dans l'ordre decroissant : \n \n");
+                    afficherArbre(abr);
+                    printf("\n");
                  break;
 
         case 5 : printf("Quelle borne sup ?\n");
@@ -87,9 +89,7 @@ void main()
                   printf("Pourcentage de benevoles entre %d ans et %d ans : %f \n", b-4, b, pourcentageTranche(abr, b));
                   break;
 
-        case 12 :   printf("Voici l'arbre dans l'ordre decroissant : \n \n");
-                    afficherArbre(abr);
-                    printf("\n");
+        case 12 :   //supprimer arbre ici !
                   break;
 
 
