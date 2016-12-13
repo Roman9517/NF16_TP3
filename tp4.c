@@ -505,3 +505,14 @@ void afficherArbre(Tranche *racine)
     }
 
 }
+
+void detruire_Arbre(Tranche* racine)
+{
+    if (racine != NULL)
+    {
+    detruire_Arbre(racine->filsG);
+    detruire_Arbre(racine->filsD);
+    free(racine);  // les éléments de l'arbre sont mis à des valeurs aléatoires
+
+    }
+}
