@@ -4,6 +4,7 @@
 #include<time.h>
 
 
+
 Benevole *nouveauBen(char *nom, char *prenom, int CIN, char sexe, int annee)
 {
     Benevole *ben=malloc(sizeof(Benevole));
@@ -73,19 +74,18 @@ Tranche *ajoutTranche(Tranche *racine, int borneSup)
             if (tmp->BorneSup > tr->BorneSup)
             {
                 tmp1=tmp;
-                tmp1->filsG=tmp;
                 tmp=tmp->filsG;
             }
             else if (tmp->BorneSup < tr->BorneSup)
             {
                 tmp1=tmp;
-                tmp1->filsD=tmp;
                 tmp=tmp->filsD;
             }
         }
         if (tmp==NULL)   //Si le noeud n'existe pas déjà
         {
-            tmp=tr;
+            if(tmp1->BorneSup > borneSup) tmp1->filsG=tr;
+            else if (tmp1->BorneSup < borneSup) tmp1->filsD=tr;
             tr->pere=tmp1;
             return racine;
         }
@@ -480,7 +480,7 @@ ListeTranche *creerListeTranche()
             courant=courant->filsD;
         }
     }
-} */
+}*/
 
 void afficherArbre(Tranche *racine)
 {
