@@ -13,7 +13,7 @@ void main()
     Tranche *abr;
     do
     {
-    printf("Que voulez vous faire ? : \n1 : Initialiser un arbre\n2 : Ajouter une tranche\n3 : Ajouter un benevole\n4 : Afficher les tranches d'ages\n5 : Afficher les benevoles\n6 : Supprimer un benevole\n7 : Supprimer une tranche\n8 : Afficher les benevoles d’honneur\n9 : Afficher le nombre total de benevoles\n10 : Actualiser l'ABR\n11 : Afficher le pourcentage de benevoles d’une tranche d’age\n12 : Detruire l'arbre\n13 : Quitter \n ");
+    printf("Que voulez vous faire ? : \n1 : Initialiser un arbre\n2 : Ajouter une tranche\n3 : Ajouter un benevole\n4 : Afficher les tranches d'ages\n5 : Afficher les benevoles\n6 : Supprimer un benevole\n7 : Supprimer une tranche\n8 : Afficher les benevoles d'honneur\n9 : Afficher le nombre total de benevoles\n10 : Actualiser l'ABR\n11 : Afficher le pourcentage de benevoles d'une tranche d'age\n12 : Detruire l'arbre\n13 : Quitter \n");
     scanf("%d", &choix);
     switch(choix)
     {
@@ -69,7 +69,9 @@ void main()
                   printf("Pourcentage de benevoles entre %d ans et %d ans : %f \n", b-4, b, pourcentageTranche(abr, b));
                   break;
 
-        case 12 : //pas fait
+        case 12 :   printf("Voici l'arbre dans l'ordre decroissant : \n \n");
+                    afficherArbre(abr);
+                    printf("\n");
                   break;
 
 
