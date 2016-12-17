@@ -250,7 +250,7 @@ int supprimerBen(Tranche *racine, int CIN, int annee)
 
 
 
-int supprimerTranche(Tranche *racine, int borneSup)
+/*int supprimerTranche(Tranche *racine, int borneSup)
 {
     Tranche *tr=chercherTranche(racine, borneSup);
     if(tr!=NULL)
@@ -262,6 +262,51 @@ int supprimerTranche(Tranche *racine, int borneSup)
             tr->liste->nb--;
         }
         free(tr);
+        return 0;
+    }
+    return 1;
+}*/
+
+int supprimerTranche(Tranche *racine, int borneSup)   //probleme : remplace par une valeur quelconque, il faudrait faire une liste chainee de tranches pour pouvoir vraiment supprimer la tranche de la liste chainee
+{
+    int c=1;
+    int borne=borneSup;
+    Tranche *tranche=racine;
+    while(c==1){
+    Tranche *tr=chercherTranche(racine, borne);
+    Elem *e=chercherEl(l, borneSup);
+    if(tr!=NULL)
+    {
+        while(tr->liste->nb != 0)
+        {
+            Benevole *tmp=tr->liste->premier;   //on supprime en tete
+            free(tmp);
+            tr->liste->nb--;
+        }
+        if (tr->filsG==NULL)
+        {
+            Tranche *sauv=tr;
+            tr->filsG->pere=tr;
+            tr=tr->filsG;
+            free(tr);
+            c=0;
+        }
+        else if(tr->filsD==NULL)
+        {
+            Tranche *sauv=tr->filsD;
+            tr->filsD->pere=tr;
+            tr=tr->filsD;
+            free(tr);
+            c=0;
+        }
+        else
+        {
+            Tranche *courant=tr->filsD;
+            while(courant->filsG!=NULL) courant=courant->filsG;  //on prend le min du sous arbre drooit
+            tr->BorneSup = courant->BorneSup;
+            borne=tr->BorneSup;
+            tranche=tr->filsD;
+        }
         return 0;
     }
     return 1;
