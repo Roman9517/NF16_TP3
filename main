@@ -20,7 +20,10 @@ void main()
     int choix, b, CID, annee;
     char nom[NMAX], prenom[NMAX];
     char sexe=' ';
-    Tranche *abr;
+    Benevole *ben;
+    Tranche *abr=NULL;
+    extern ListeTranche *l;
+    Tranche *ty;
     do
     {
     printf("Que voulez vous faire ? : \n1 : Initialiser un arbre\n2 : Ajouter une tranche\n3 : Ajouter un benevole\n4 : Afficher les tranches d'ages\n5 : Afficher les benevoles\n6 : Supprimer un benevole\n7 : Supprimer une tranche\n8 : Afficher les benevoles d'honneur\n9 : Afficher le nombre total de benevoles\n10 : Actualiser l'ABR\n11 : Afficher le pourcentage de benevoles d'une tranche d'age\n12 : Detruire l'arbre\n13 : Quitter \n");
@@ -30,7 +33,7 @@ void main()
         case 1 : abr=NULL;
                  break;
 
-        case 2 :    printf("Quelle borne sup ? \n");
+        case 2 :    printf("Quelle borne sup ? \n");  //OK
                     scanf("%d", &b);
                     abr=ajoutTranche(abr, b);
                     break;
@@ -47,16 +50,23 @@ void main()
                  scanf("%d", &CID);
                  printf("saisir l'annee de naissance\n");
                  scanf("%d", &annee); */
-                 //Benevole *ben=nouveauBen("", prenom, CID, sexe, annee);
-                 //ben=insererBen(abr, ben);
+                 ben=nouveauBen("tr", "prenom", 789, 'f',2006);
+                 printf("nouveau 1\n");
+                 insererBen(abr, ben);
+                 /*printf("insere 1\n");
+                 ben=nouveauBen("pr", "prnom", 4579, 'm',1986);
+                 printf("nouveau 2\n");
+                 insererBen(abr, ben);
+                 printf("insere 2\n");*/
                  break;
 
-        case 4 : printf("Voici l'arbre dans l'ordre decroissant : \n \n");
+        case 4 : printf("Voici l'arbre dans l'ordre decroissant : \n \n");  //plutot faire dans l'ordre croissant non ? ils veulent une liste triée
                  afficherArbre(abr);
                  printf("\n");
+
                  break;
 
-        case 5 : printf("Quelle borne sup ?\n");
+        case 5 : printf("Quelle borne sup ?\n");  //OK
                  scanf("%d", &b);
                  afficherTranche(abr, b);
                  break;
@@ -69,6 +79,7 @@ void main()
         case 7 : printf("Quelle borne sup ?\n");
                  scanf("%d", &b);
                  supprimerTranche(abr, b);
+                 afficherArbre(abr);
                  break;
 
         /*case 8 : ListBenevoles *l;
@@ -101,6 +112,7 @@ void main()
 
         case 13 : printf("Au revoir\n");
                   break;
+
 
         default : printf("Nombre non reconnu \n");
                   break;
