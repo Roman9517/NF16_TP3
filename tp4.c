@@ -105,11 +105,11 @@ int anneeActuelle()
 }
 
 
-int attribuerBorne(int annee)
+int attribuerBorne(int annee)  //OK
 {
     int age = anneeActuelle()-annee;
     int b=0;
-    while(b+4 <age)
+    while(b <age)
         b=b+4;
     return b;
 }
