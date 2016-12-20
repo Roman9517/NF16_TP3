@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "tp4bisbis.h"
+#include "tp4.h"
 #include<time.h>
 #include <string.h>
 
