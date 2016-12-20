@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "tp4.h"
+#include "tp4bisbis.h"
 #include<time.h>
 #include <string.h>
 
 
 
-Benevole *nouveauBen(char *nom, char *prenom, int CIN, char sexe, int annee)
+Benevole *nouveauBen(char *nom, char *prenom, int CIN, char sexe, int annee)  //OK
 {
     Benevole *ben=malloc(sizeof(Benevole));
     strcpy(ben->nom, nom);
@@ -19,7 +19,7 @@ Benevole *nouveauBen(char *nom, char *prenom, int CIN, char sexe, int annee)
 }
 
 
-Tranche *nouvelleTranche(int borneSup)
+Tranche *nouvelleTranche(int borneSup)   //OK
 {
     Tranche *tr=malloc(sizeof(Tranche));
     tr->BorneSup=borneSup;
@@ -31,7 +31,7 @@ Tranche *nouvelleTranche(int borneSup)
 }
 
 
-ListBenevoles *nouvelleListe()
+ListBenevoles *nouvelleListe()   //OK
 {
     ListBenevoles *list=malloc(sizeof(ListBenevoles));
     list->nb=0;
@@ -54,7 +54,7 @@ Tranche *ajoutTranche(Tranche *racine, int borneSup)
         Tranche *tr=nouvelleTranche(borneSup);
         Tranche *tmp=racine;
         Tranche *tmp1;
-        if((racine->filsD==NULL) && (racine->filsG==NULL))  //un seul element
+        if((racine->filsD==NULL) && (racine->filsG==NULL))  //un seul element : la racine
         {
             if(borneSup > racine->BorneSup)
             {
@@ -66,6 +66,7 @@ Tranche *ajoutTranche(Tranche *racine, int borneSup)
                 racine->filsG=tr;
                 tr->pere=racine;
             }
+            else if (borneSup == racine->BorneSup) free(tr); //si la tranche existe déjà, on libère l'espace memoire alloué inutilement à tr
             return racine; //si on a pas ajouté car la borne sup existe deja on renvoie le meme arbre
         }
         while((tmp!=NULL) && (tmp->BorneSup != borneSup))   //
@@ -80,6 +81,7 @@ Tranche *ajoutTranche(Tranche *racine, int borneSup)
                 tmp1=tmp;
                 tmp=tmp->filsD;
             }
+            else free(tr); //si la tranche existe deja
         }
         if (tmp==NULL)   //Si le noeud n'existe pas déjà
         {
@@ -165,7 +167,7 @@ ListBenevoles *insererlist(Tranche *tr, Benevole *bene)
 Benevole *insererBen(Tranche *racine, Benevole *benevole)
 {
     int bs;
-    Tranche *tr;//=malloc(sizeof(Tranche));
+    Tranche *tr; //=malloc(sizeof(Tranche));
     //tr=NULL;
     bs=attribuerBorne(benevole->annee);
     if (racine==NULL)
@@ -182,6 +184,7 @@ Benevole *insererBen(Tranche *racine, Benevole *benevole)
         racine = ajoutTranche(racine,bs); //Si la tranche existe déjà on ne la rajoute pas, c'est défini dans la fonction
         printf("ok ajout tranche2\n");  //probleme car la tranche n'est pas ajoutée quand on ne l'a pas mise direct dans le 2
         afficherArbre(racine);
+        printf("ok\n");
         tr=chercherTranche(racine, bs);
         printf("ok chercher tranche\n");
         tr->liste = insererlist(tr, benevole);
@@ -222,7 +225,7 @@ Benevole *chercherBen(Tranche *racine,int CIN, int *annee)
 
 
 
-Tranche *chercherTranche(Tranche *racine, int Bornesup )
+Tranche *chercherTranche(Tranche *racine, int Bornesup )  //OK
 {
     Tranche *tmp=racine;
     while ((tmp->BorneSup != Bornesup) && tmp!=NULL)
@@ -231,7 +234,8 @@ Tranche *chercherTranche(Tranche *racine, int Bornesup )
             tmp=tmp->filsG;
         else tmp=tmp->filsD;
     }
-    if(tmp->BorneSup==Bornesup) return tmp;
+    if(tmp->BorneSup!=NULL)
+            return tmp; //probleme à cette ligne...
     else return NULL;
 }
 
@@ -264,7 +268,7 @@ int supprimerTranche(Tranche *racine, int borneSup)   //probleme : remplace par 
     int borne=borneSup;
     Tranche *tranche=racine;
     while(c==1){
-    Tranche *tr=chercherTranche(racine, borne);
+    Tranche *tr=chercherTranche(racine, borne);  //toujours un probleme dans chercherTranche()
     if(tr!=NULL)
     {
         while(tr->liste->nb != 0)
@@ -584,7 +588,7 @@ void afficherTranche(Tranche *racine, int borneSup)
     }
 }*/
 
-void afficherArbre(Tranche *racine)   //faire une liste chainee avant et l'afficher ensuite
+void afficherArbre(Tranche *racine)
 {
     if (racine != NULL)
     {
@@ -611,4 +615,5 @@ void detruire_Arbre(Tranche* racine)
     free(racine);  // les éléments de l'arbre sont mis à des valeurs aléatoires
     }
 }
+
 
