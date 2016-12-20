@@ -25,19 +25,9 @@ typedef struct Tranche
     ListBenevoles *liste;
     int BorneSup;
     struct Tranche *pere;
-    struct Tranche *flisG;
+    struct Tranche *filsG;
     struct Tranche *filsD;
 } Tranche;
-
-//declaration structures rajoutées
-
-typedef struct ListeTranche
-{
-    Tranche *premier;
-    int nb;
-} ListeTranche;
-
-
 
 
 
@@ -87,8 +77,7 @@ int anneeActuelle();
 
 int bornemax(Tranche *racine);
 
-ListeTranche *creerListeTranche();
-
 void afficherBen(Benevole *ben);
 
 void detruire_Arbre(Tranche* racine);
+
