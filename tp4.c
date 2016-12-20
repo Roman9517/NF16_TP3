@@ -193,6 +193,57 @@ Benevole *insererBen(Tranche *racine, Benevole *benevole)
     }
 }
 
+/*Benevole *insererBen(Tranche *racine , Benevole *benevole){
+
+    int age = anneeActuelle() - benevole->Annee;
+
+    if(racine == NULL){
+        printf("Cet arbre n'existe pas");
+        return NULL;
+    }
+
+    Tranche *parcours = malloc(sizeof(Tranche));
+    parcours = racine;
+
+    parcours = succ_rec(parcours, age);
+
+    if(parcours->BorneSup < age)
+    {
+        racine = ajoutTranche(&racine, age);
+        printf("Cette tranche n'existe pas, nous la créons.");
+    }
+
+
+    if(parcours == NULL){
+        printf("Erreur");
+    }
+
+    if(parcours->ListBenevoles.Benevole == NULL){
+        parcours->ListBenevoles.Benevole = benevole;
+    }
+    else if(parcours->ListBenevoles.Benevole->Annee < benevole->Annee){
+        parcours->ListBenevoles.Benevole->Suivant = benevole;
+    }
+    else{
+        Benevole *tmp = parcours->ListBenevoles.Benevole;
+        while((tmp->Suivant != NULL) && (tmp->Annee > benevole->Annee))
+          {
+              tmp = tmp->Suivant;
+          }
+        if(tmp->Suivant == NULL){
+            tmp->Suivant = benevole;
+        }
+        else{
+            benevole->Suivant = tmp -> Suivant;
+            tmp -> Suivant = benevole;
+
+        }
+    }
+
+    return racine->ListBenevoles.Benevole;
+}
+*/
+
 
 Benevole *chercherBen(Tranche *racine,int CIN, int *annee)
 {
@@ -615,5 +666,7 @@ void detruire_Arbre(Tranche* racine)
     free(racine);  // les éléments de l'arbre sont mis à des valeurs aléatoires
     }
 }
+
+
 
 
