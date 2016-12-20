@@ -53,24 +53,22 @@ Tranche *ajoutTranche(Tranche *racine, int borneSup)
     {
         Tranche *tr=nouvelleTranche(borneSup);
         Tranche *tmp=racine;
-        Tranche *tmp1=racine;
-        if((racine->filsD==NULL) && (racine->filsG==NULL))
+        Tranche *tmp1;
+        if((racine->filsD==NULL) && (racine->filsG==NULL))  //un seul element
         {
             if(borneSup > racine->BorneSup)
             {
                 racine->filsD=tr;
                 tr->pere=racine;
-                return racine;
             }
             else if(borneSup < racine->BorneSup)
             {
                 racine->filsG=tr;
                 tr->pere=racine;
-                return racine;
             }
-            else return racine; //on a pas ajouté car la borne sup existe deja
+            return racine; //si on a pas ajouté car la borne sup existe deja on renvoie le meme arbre
         }
-        while((tmp!=NULL) && (tmp->BorneSup != borneSup))
+        while((tmp!=NULL) && (tmp->BorneSup != borneSup))   //
         {
             if (tmp->BorneSup > tr->BorneSup)
             {
@@ -95,6 +93,7 @@ Tranche *ajoutTranche(Tranche *racine, int borneSup)
 }
     } return racine;
 }
+
 
 int anneeActuelle()
 {
@@ -123,7 +122,7 @@ ListBenevoles *insererlist(Tranche *tr, Benevole *bene)
         tr->liste->premier=bene;
         tr->liste->nb=1;
         printf("nb=0\n");
-        return bene;
+        return bene;                            //OK jusque ici
     }
     else if (tr->liste->premier->annee >= bene->annee)  //ajout en tete
     {
@@ -166,19 +165,27 @@ ListBenevoles *insererlist(Tranche *tr, Benevole *bene)
 Benevole *insererBen(Tranche *racine, Benevole *benevole)
 {
     int bs;
-    Tranche *tr;
+    Tranche *tr;//=malloc(sizeof(Tranche));
+    //tr=NULL;
     bs=attribuerBorne(benevole->annee);
     if (racine==NULL)
     {
         racine = nouvelleTranche(bs);
+        printf("ok nouvelle racine\n");
         racine->liste=insererlist(racine, benevole);
-        return racine->liste->premier;
+        printf("ok nouvelle liste racine\n");
+        afficherArbre(racine);
+        return racine->liste->premier;              //OK jusque ici
     }
     else
     {
         racine = ajoutTranche(racine,bs); //Si la tranche existe déjà on ne la rajoute pas, c'est défini dans la fonction
+        printf("ok ajout tranche2\n");  //probleme car la tranche n'est pas ajoutée quand on ne l'a pas mise direct dans le 2
+        afficherArbre(racine);
         tr=chercherTranche(racine, bs);
+        printf("ok chercher tranche\n");
         tr->liste = insererlist(tr, benevole);
+        printf("ok insere liste 2\n");
         return tr->liste->premier;
     }
 }
@@ -218,13 +225,14 @@ Benevole *chercherBen(Tranche *racine,int CIN, int *annee)
 Tranche *chercherTranche(Tranche *racine, int Bornesup )
 {
     Tranche *tmp=racine;
-    while (tmp->BorneSup != Bornesup && tmp!=NULL)
+    while ((tmp->BorneSup != Bornesup) && tmp!=NULL)
     {
         if (tmp->BorneSup > Bornesup)
             tmp=tmp->filsG;
         else tmp=tmp->filsD;
     }
-    return tmp;
+    if(tmp->BorneSup==Bornesup) return tmp;
+    else return NULL;
 }
 
 
@@ -250,23 +258,6 @@ int supprimerBen(Tranche *racine, int CIN, int annee)
 
 
 
-/*int supprimerTranche(Tranche *racine, int borneSup)
-{
-    Tranche *tr=chercherTranche(racine, borneSup);
-    if(tr!=NULL)
-    {
-        while(tr->liste->nb != 0)
-        {
-            Benevole *tmp=tr->liste->premier;   //on supprime en tete
-            free(tmp);
-            tr->liste->nb--;
-        }
-        free(tr);
-        return 0;
-    }
-    return 1;
-}*/
-
 int supprimerTranche(Tranche *racine, int borneSup)   //probleme : remplace par une valeur quelconque, il faudrait faire une liste chainee de tranches pour pouvoir vraiment supprimer la tranche de la liste chainee
 {
     int c=1;
@@ -274,7 +265,6 @@ int supprimerTranche(Tranche *racine, int borneSup)   //probleme : remplace par 
     Tranche *tranche=racine;
     while(c==1){
     Tranche *tr=chercherTranche(racine, borne);
-    Elem *e=chercherEl(l, borneSup);
     if(tr!=NULL)
     {
         while(tr->liste->nb != 0)
@@ -311,6 +301,10 @@ int supprimerTranche(Tranche *racine, int borneSup)   //probleme : remplace par 
     }
     return 1;
 }
+}
+
+
+
 
 
 ListBenevoles *BenDhonneur(Tranche *racine)
@@ -395,7 +389,7 @@ int actualiser(Tranche *racine)
 
 int totalBenTranche(Tranche *racine, int borneSup)
 {
-    int nb;
+    int nb=0;
     Tranche *tr=chercherTranche(racine, borneSup);
     Benevole *tmp=tr->liste->premier;
     while(tmp!=NULL)
@@ -418,7 +412,7 @@ int bornemax(Tranche *racine)
 
 
 
-int totalBen(Tranche *racine)
+int totalBen(Tranche *racine)  //Le plus optimum ?
 {
     int borneSup=20;
     int tot;
@@ -438,7 +432,7 @@ float pourcentageTranche(Tranche *racine, int borneSup)
     float res=0;
     if(totalBen(racine)!=0)
         res=(((float)totalBenTranche(racine, borneSup)) / (totalBen(racine)));
-    return res;
+    return res*100;
 }
 
 void afficherBen(Benevole *ben)
@@ -463,13 +457,71 @@ void afficherTranche(Tranche *racine, int borneSup)
 }
 
 
-ListeTranche *creerListeTranche()
+// Ensemble des fonctions pour creer une liste chainee de Tranches et les afficher
+
+
+/*Elem *creerel(int borneSup)
 {
-    ListeTranche *l=malloc(sizeof(ListeTranche));
-    l->premier=NULL;
-    l->nb=0;
-    return l;
-}
+    Elem *e=malloc(sizeof(Elem));
+    e->val=BorneSup;
+    e->suivant=NULL;
+    return e;
+}*/
+
+
+
+
+/*ListeTranche *ajouterElem(ListeTranche *l, Elem *elem)
+{
+    if (l->premier==NULL)
+    {
+        l->premier=elem;
+        l->nb=1;
+        return l;
+    }
+    else
+    {
+        Elem *tmp=l->premier;
+        Elem *tmp1;
+        while((tmp!=NULL) && (tmp->val < elem->val))
+        {
+            tmp1=tmp;
+            tmp=tmp->suivant;
+        }
+        if(tmp==NULL)  //ajout en queue
+        {
+            tmp1->suivant=elem;
+            l->nb++;
+            return l;
+        }
+        else //on a trouve la place
+        {
+            tmp1->suivant=elem;
+            elem->suivant=tmp;
+            l->nb++;
+            return l;
+        }
+    }
+}*/
+
+
+
+
+/*void AfficherArbreListe(Tranche *racine)
+{
+    ListeTranche *l=creerListeTranche();
+    if (l->premier==NULL) printf("aucune tranche\n");
+    else
+    {
+        printf("%d ", l->premier->val);
+        Elem *tmp=l->premier->suivant;
+        while(tmp!=NULL)
+        {
+            printf("-> %d ", tmp->val);
+            tmp=tmp->suivant;
+        }
+    }
+}*/
 
 /*void afficherArbre(Tranche *racine)   //on fait un parcours_infixe  Ne marche pas encore
 {
@@ -532,7 +584,7 @@ ListeTranche *creerListeTranche()
     }
 }*/
 
-void afficherArbre(Tranche *racine)
+void afficherArbre(Tranche *racine)   //faire une liste chainee avant et l'afficher ensuite
 {
     if (racine != NULL)
     {
@@ -548,7 +600,6 @@ void afficherArbre(Tranche *racine)
         }
         afficherArbre(racine->filsG);
     }
-
 }
 
 void detruire_Arbre(Tranche* racine)
@@ -558,6 +609,6 @@ void detruire_Arbre(Tranche* racine)
     detruire_Arbre(racine->filsG);
     detruire_Arbre(racine->filsD);
     free(racine);  // les éléments de l'arbre sont mis à des valeurs aléatoires
-
     }
 }
+
