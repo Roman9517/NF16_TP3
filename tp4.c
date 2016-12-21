@@ -301,6 +301,7 @@ int supprimerTranche(Tranche *racine, int borneSup)   //Probleme avec chercherTr
             while(courant->filsG!=NULL) courant=courant->filsG;  
             //on remplace la valeur à supprimer par le plus petit élément du sous arbre droit;
             tr->BorneSup = courant->BorneSup;
+            tr->liste= courant->liste;
             borne=tr->BorneSup;    
             tranche=tr->filsD;   
             //Puis on reste dans la boucle pour supprimer l'élementd ans le sous arbre droit qui est le plus petit successeur
