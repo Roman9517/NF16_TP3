@@ -482,7 +482,7 @@ void afficherArbre(Tranche *racine) //OK mais plutôt faire affichahe en ordre c
     }
 }
 
-void detruire_Arbre(Tranche* racine)
+void detruire_Arbre(Tranche* racine) //Il faut faire appel à supprimerTranche non ?
 {
     if (racine != NULL)
     {
