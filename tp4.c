@@ -243,24 +243,41 @@ Tranche *chercherTranche(Tranche *racine, int Bornesup )  //OK mais pas dans la 
 
 
 
-int supprimerBen(Tranche *racine, int CIN, int annee) //Pas testé puisque insererBen() marche pas
+int supprimerBen(Tranche *racine, int CIN, int annee)
 {
-    Benevole *ben=chercherBen(racine, CIN, &annee);
-    if(ben !=NULL)
+    int b=attribuerBorne(annee);
+    Tranche *tr=chercherTranche(racine,b);
+    if(tr!=NULL)
     {
-        int b=attribuerBorne(ben->annee);
-        Tranche *tr=chercherTranche(racine,b);
-        if(tr!=NULL)  //si la tranche existe bien
+        Benevole *courant=tr->liste->premier;
+        Benevole *prec;
+        if (tr->liste->nb ==0) // liste vide
+            return 1;
+        else
         {
-                free(ben);
-                tr->liste->nb--;
-                if(tr->liste->nb==0) //c'était le seul élément de la liste et du noeud
-                    free(tr);
-                return 0;
+            while (courant!=NULL && courant ->annee < annee)
+            {
+                prec=courant;
+                courant=courant->suivant;
+            }
+            while (courant != NULL && courant->annee == annee) //on est au premier dont l'annee de naissance est la bonne
+            {
+                if(courant->CID == CIN)
+                {
+                    prec->suivant=courant->suivant;
+                    tr->liste->nb--;
+                    free(courant);
+                    return 0;
+                }
+            }
+            if ((courant == NULL) || (courant->annee > annee))
+                return 1;
+
         }
     }
     return 1;
 }
+
 
 
 
@@ -441,8 +458,9 @@ int totalBen(Tranche *racine)  //Le plus optimum ? Ou autre solution ?
 float pourcentageTranche(Tranche *racine, int borneSup) //idem
 {
     float res=0;
-    if(totalBen(racine)!=0)
-        res=(((float)totalBenTranche(racine, borneSup)) / (totalBen(racine)));
+    int t;
+    if(t=totalBen(racine)!=0)
+        res=(((float)totalBenTranche(racine, borneSup)) / t);
     return res*100;
 }
 
