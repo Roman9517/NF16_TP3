@@ -285,7 +285,7 @@ int supprimerTranche(Tranche *racine, int borneSup)   //Probleme avec chercherTr
             tr->filsG->pere=tr;
             tr=tr->filsG;
             free(tr);
-            c=0;
+            c=0;   //On supprime sans probleme la feuille, on met c=0 pour sortir de la boucle et quitter le programme
         }
         else if(tr->filsD==NULL)
         {
@@ -293,15 +293,17 @@ int supprimerTranche(Tranche *racine, int borneSup)   //Probleme avec chercherTr
             tr->filsD->pere=tr;
             tr=tr->filsD;
             free(tr);
-            c=0;
+            c=0;   //On supprime sans probleme la feuille, on met c=0 pour sortir de la boucle et quitter le programme
         }
         else
         {
             Tranche *courant=tr->filsD;
-            while(courant->filsG!=NULL) courant=courant->filsG;  //on prend le min du sous arbre drooit
+            while(courant->filsG!=NULL) courant=courant->filsG;  
+            //on remplace la valeur à supprimer par le plus petit élément du sous arbre droit;
             tr->BorneSup = courant->BorneSup;
-            borne=tr->BorneSup;
-            tranche=tr->filsD;
+            borne=tr->BorneSup;    
+            tranche=tr->filsD;   
+            //Puis on reste dans la boucle pour supprimer l'élementd ans le sous arbre droit qui est le plus petit successeur
         }
         return 0;
     }
