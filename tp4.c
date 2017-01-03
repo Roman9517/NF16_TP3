@@ -516,7 +516,7 @@ void detruire_Arbre(Tranche* racine) //Il faut faire appel à supprimerTranche n
     {
     detruire_Arbre(racine->filsG);
     detruire_Arbre(racine->filsD);
-    free(racine);  // les éléments de l'arbre sont mis à des valeurs aléatoires
+    supprimerTranche(racine, racine->BorneSup) ;  // les éléments de l'arbre sont mis à des valeurs aléatoires
     }
 }
 
