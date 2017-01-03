@@ -315,6 +315,50 @@ int supprimerTranche(Tranche *racine, int borneSup)   // pas ok
 }
 
 
+int supprimerTranche2(Tranche *racine, int bornesup)
+{
+    if (racine==NULL)
+        return 1;
+    else if(racine->BorneSup > bornesup)
+        racine->filsG = supprimerTranche2(racine->filsG, bornesup);
+    else if(racine->BorneSup < cle)
+        racine->filsD = supprimerTranche2(racine->filsD, bornesup);
+    else // racine->BorneSup == bornesup
+    {
+         while(racine->liste->nb != 0) //supression de la liste de bénévoles
+        {
+            Benevole *tmp=tr->liste->premier;   //on supprime en tete
+            Benevole *tmp1=racine->liste->premier->suivant;
+            free(tmp);
+            racine->liste->premier=tmp1;
+            racine->liste->nb--;
+        }
+        if(racine->filsG == NULL)
+        {
+            
+            Tranche *sauv = racine;
+            racine=racine->filsD;
+            free(racine);
+            return 0;
+        }
+        else if(racine->filsD == NULL)
+        {
+            Tranche *sauv=racine;
+            racine=racine->filsG;
+            free(sauv);
+            return 0;
+        }
+        else
+        {
+            Tranche *tmp=racine->filsD;
+            while(tmp->filsG != NULL)
+                tmp=tmp->filsG;
+            racine->BorneSup = tmp->BorneSup //min du fils droit de racine
+            racine->filsD = supprimerTranche2(racine->filsD, racine->BorneSup);
+        }
+    }
+    return 1;
+}
 
 
 ListBenevoles *BenDhonneur(Tranche *racine) //On part du principe qu'il n'y a pas de tranche d'age vide. OK
