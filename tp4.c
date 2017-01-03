@@ -263,101 +263,84 @@ int supprimerBen(Tranche *racine, int CIN, int annee)  //OK, il manque juste la 
 
 
 
-
-int supprimerTranche(Tranche *racine, int borneSup)   // pas ok
+int supprimerTranche(Tranche *racine, int bornesup)
 {
-    int c=1;
-    int borne=borneSup;
-    Tranche *tranche=racine;
-    while(c==1){
-    Tranche *tr=chercherTranche(racine, borne);
-    if(tr!=NULL)
+    int i;
+    Tranche *p;
+    p=chercherTranche(racine, bornesup);
+    if(p==NULL) return 1;
+    else
     {
-        while(tr->liste->nb != 0)
+        Benevole *courant, *supp;
+        courant=p->liste->premier;
+        while(p->liste->nb != 0) //supression de la liste de bénévoles
         {
-            Benevole *tmp=tr->liste->premier;   //on supprime en tete
+            Benevole *tmp=p->liste->premier;   //on supprime en tete
+            Benevole *tmp1=p->liste->premier->suivant;
             free(tmp);
-            tr->liste->nb--;
+            p->liste->premier=tmp1;
+            p->liste->nb--;
         }
-        if (tr->filsG==NULL)
+        if(p->filsG==NULL && p->filsD==NULL)
         {
-            Tranche *sauv=tr;
-            tr->filsG->pere=tr;
-            tr=tr->filsG;
-            free(tr);
-            c=0;   //On supprime sans probleme la feuille, on met c=0 pour sortir de la boucle et quitter le programme
-            return 0;
-        }
-        else if(tr->filsD==NULL)
-        {
-            Tranche *sauv=tr->filsD;
-            tr->filsD->pere=tr;
-            tr=tr->filsD;
-            free(tr);
-            c=0;   //On supprime sans probleme la feuille, on met c=0 pour sortir de la boucle et quitter le programme
+            if(p==p->pere->filsD)
+                p->pere->filsD=NULL;
+            else p->pere->filsG=NULL;
+            free(p);
             return 0;
         }
         else
         {
-            Tranche *courant=tr->filsD;
-            while(courant->filsG!=NULL) courant=courant->filsG;
-            //on remplace la valeur à supprimer par le plus petit élément du sous arbre droit;
-            tr->BorneSup = courant->BorneSup;
-            tr->liste= courant->liste;
-            borne=tr->BorneSup;
-            tranche=tr->filsD;
-            //Puis on reste dans la boucle pour supprimer l'élementd ans le sous arbre droit qui est le plus petit successeur
-        }
-
-    }
-    return 1;
-}
-}
-
-
-int supprimerTranche2(Tranche *racine, int bornesup)
-{
-    if (racine==NULL)
-        return 1;
-    else if(racine->BorneSup > bornesup)
-        racine->filsG = supprimerTranche2(racine->filsG, bornesup);
-    else if(racine->BorneSup < cle)
-        racine->filsD = supprimerTranche2(racine->filsD, bornesup);
-    else // racine->BorneSup == bornesup
-    {
-         while(racine->liste->nb != 0) //supression de la liste de bénévoles
-        {
-            Benevole *tmp=tr->liste->premier;   //on supprime en tete
-            Benevole *tmp1=racine->liste->premier->suivant;
-            free(tmp);
-            racine->liste->premier=tmp1;
-            racine->liste->nb--;
-        }
-        if(racine->filsG == NULL)
-        {
-            
-            Tranche *sauv = racine;
-            racine=racine->filsD;
-            free(racine);
-            return 0;
-        }
-        else if(racine->filsD == NULL)
-        {
-            Tranche *sauv=racine;
-            racine=racine->filsG;
-            free(sauv);
-            return 0;
-        }
-        else
-        {
-            Tranche *tmp=racine->filsD;
-            while(tmp->filsG != NULL)
-                tmp=tmp->filsG;
-            racine->BorneSup = tmp->BorneSup //min du fils droit de racine
-            racine->filsD = supprimerTranche2(racine->filsD, racine->BorneSup);
+            if(p->filsG==NULL || p->filsD==NULL)
+            {
+                if(p->filsG!=NULL)
+                {
+                    if(p==p->pere->filsD)
+                    {
+                        p->pere->filsD=p->filsG;
+                        p->filsG=NULL;
+                    }
+                    else
+                    {
+                        p->pere->filsG=p->filsG;
+                        p->filsG=NULL;
+                    }
+                }
+                else
+                {
+                    if(p==p->pere->filsD)
+                    {
+                        p->pere->filsD=p->filsD;
+                        p->filsD=NULL;
+                    }
+                    else
+                    {
+                        p->pere->filsG=p->filsD;
+                        p->filsD=NULL;
+                    }
+                }
+                free(p);
+                return 0;
+            }
+            else //si le noeud a 2 fils
+            {
+                Tranche *succ=p->filsD;
+                while(succ->filsG!=NULL)
+                {
+                    succ=succ->filsG;
+                }
+                int tmp;
+                ListBenevoles *ltmp;
+                tmp=p->BorneSup;
+                p->BorneSup = succ->BorneSup;
+                succ->BorneSup=tmp;
+                ltmp=p->liste;
+                p->liste=succ->liste;
+                succ->liste=ltmp;
+                i=supprimerTranche(succ, succ->BorneSup);
+            }
         }
     }
-    return 1;
 }
 
 
