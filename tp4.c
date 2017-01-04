@@ -441,90 +441,90 @@ int supprimerTranche(Tranche *racine, int borneSup) //celui de Laure modifié pa
 {
     Benevole *ben = malloc(sizeof(Benevole));
     Tranche *parcours = racine;
-    
+
     //si l'arbre est vide on renvoi une erreur
     if (parcours == NULL)
     {
         printf("l'arbre est vide ou n'existe pas");
         return 1;
     }
-    
+
     //on se positionne sur la tranche à supprimer
     parcours = chercherTranche(racine, borneSup);
-    
+
     //Si la tranche n'a aucun fils
     if(parcours->filsG == NULL && parcours->filsD == NULL)
     {
         //on vide la tranche de ces benevole pour pouvoir liberer la memoire
-        ben=parcours->liste.premier;
+        ben=parcours->liste->premier;
         while(ben!=NULL)  //faire suppression en tete non ?
         {
-            supprimerBen(racine, ben->CIN, ben->Annee);
-            ben=ben->Suivant;
+            supprimerBen(racine, ben->CID, ben->annee);
+            ben=ben->suivant;
         }
-        
+
         if(parcours->pere->filsD == parcours)
             parcours->pere->filsD = NULL;
         else parcours->pere->filsG = NULL;
-        
+
         free(parcours);
         return 0;
     }
-    
+
     //Si la tranche n'a pas de fils gauche
     if(parcours->filsG==NULL)
     {
         Tranche *tmp = parcours;
-        ben=parcours->ListBenevoles.Benevole;
+        ben=parcours->liste->premier;
         while(ben!=NULL)
         {
-            supprimerBen(racine, ben->CIN, ben->Annee);
-            ben=ben->Suivant;
+            supprimerBen(racine, ben->CID, ben->annee);
+            ben=ben->suivant;
         }
         parcours->BorneSup=parcours->filsD->BorneSup;
         parcours->liste=parcours->filsD->liste;
         parcours->filsD=NULL;
-        
+
         free(tmp);
         return 0;
     }
-    
+
     //si la tranche n'a pas de fils droit
     if (parcours->filsD==NULL)
     {
         Tranche *tmp = parcours;
-        ben=parcours->liste.premier;
+        ben=parcours->liste->premier;
         while(ben!=NULL) //idem faire plutôt en tete non ?
         {
-            supprimerBen(racine, ben->CIN, ben->Annee);
-            ben=ben->Suivant;
+            supprimerBen(racine, ben->CID, ben->annee);
+            ben=ben->suivant;
         }
-        
+
         parcours->BorneSup=parcours->filsG->BorneSup;
         parcours->liste=parcours->filsG->liste;
         parcours->filsG=NULL;
-        
+
         free(tmp);
         return 0;
     }
-    
+
     //Si la tranche a deux fils
-    
+
     Tranche *tmp = parcours;
     //on cherche la tranche minimum du fils droit
     tmp=my_min(parcours->filsD);
-    
-    ben=parcours->ListBenevoles.Benevole;
+
+    ben=parcours->liste->premier;
     while(ben!=NULL)
     {
-        supprimerBen(racine, ben->CIN, ben->Annee);
-        ben=ben->Suivant;
+        supprimerBen(racine, ben->CID, ben->annee);
+        ben=ben->suivant;
     }
-    
+
     parcours->BorneSup=tmp->BorneSup;
     parcours->liste=tmp->liste;
     supprimerTranche(tmp, tmp->BorneSup);
-    return 0;   
+    return 0;
 }
 
 
