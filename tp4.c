@@ -510,9 +510,10 @@ int supprimerTranche(Tranche *racine, int borneSup) //celui de Laure modifié pa
 
     //Si la tranche a deux fils
 
-    Tranche *tmp = parcours;
+    Tranche *tmp = parcours->filsD;
     //on cherche la tranche minimum du fils droit
-    tmp=my_min(parcours->filsD);
+    while(tmp->filsG!=NULL)
+        tmp=tmp->filsG;
 
     ben=parcours->liste->premier;
     while(ben!=NULL)
