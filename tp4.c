@@ -436,6 +436,98 @@ int supprimerTranche(Tranche *racine, int borneSup) //celui de Laure
 }
 
 
+
+int supprimerTranche(Tranche *racine, int borneSup) //celui de Laure modifié par moi --> mais peut être faire des suppressions en tete comme j'avais fait pour les benevoles
+{
+    Benevole *ben = malloc(sizeof(Benevole));
+    Tranche *parcours = racine;
+    
+    //si l'arbre est vide on renvoi une erreur
+    if (parcours == NULL)
+    {
+        printf("l'arbre est vide ou n'existe pas");
+        return 1;
+    }
+    
+    //on se positionne sur la tranche à supprimer
+    parcours = chercherTranche(racine, borneSup);
+    
+    //Si la tranche n'a aucun fils
+    if(parcours->filsG == NULL && parcours->filsD == NULL)
+    {
+        //on vide la tranche de ces benevole pour pouvoir liberer la memoire
+        ben=parcours->liste.premier;
+        while(ben!=NULL)  //faire suppression en tete non ?
+        {
+            supprimerBen(racine, ben->CIN, ben->Annee);
+            ben=ben->Suivant;
+        }
+        
+        if(parcours->pere->filsD == parcours)
+            parcours->pere->filsD = NULL;
+        else parcours->pere->filsG = NULL;
+        
+        free(parcours);
+        return 0;
+    }
+    
+    //Si la tranche n'a pas de fils gauche
+    if(parcours->filsG==NULL)
+    {
+        Tranche *tmp = parcours;
+        ben=parcours->ListBenevoles.Benevole;
+        while(ben!=NULL)
+        {
+            supprimerBen(racine, ben->CIN, ben->Annee);
+            ben=ben->Suivant;
+        }
+        parcours->BorneSup=parcours->filsD->BorneSup;
+        parcours->liste=parcours->filsD->liste;
+        parcours->filsD=NULL;
+        
+        free(tmp);
+        return 0;
+    }
+    
+    //si la tranche n'a pas de fils droit
+    if (parcours->filsD==NULL)
+    {
+        Tranche *tmp = parcours;
+        ben=parcours->liste.premier;
+        while(ben!=NULL) //idem faire plutôt en tete non ?
+        {
+            supprimerBen(racine, ben->CIN, ben->Annee);
+            ben=ben->Suivant;
+        }
+        
+        parcours->BorneSup=parcours->filsG->BorneSup;
+        parcours->liste=parcours->filsG->liste;
+        parcours->filsG=NULL;
+        
+        free(tmp);
+        return 0;
+    }
+    
+    //Si la tranche a deux fils
+    
+    Tranche *tmp = parcours;
+    //on cherche la tranche minimum du fils droit
+    tmp=my_min(parcours->filsD);
+    
+    ben=parcours->ListBenevoles.Benevole;
+    while(ben!=NULL)
+    {
+        supprimerBen(racine, ben->CIN, ben->Annee);
+        ben=ben->Suivant;
+    }
+    
+    parcours->BorneSup=tmp->BorneSup;
+    parcours->liste=tmp->liste;
+    supprimerTranche(tmp, tmp->BorneSup);
+    return 0;   
+}
+
+
 ListBenevoles *BenDhonneur(Tranche *racine) //On part du principe qu'il n'y a pas de tranche d'age vide. OK
 {
     if (racine==NULL) return NULL;
