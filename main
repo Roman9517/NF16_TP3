@@ -112,7 +112,7 @@ void main()
                   break;
 
         case 12 : detruire_Arbre(abr);
-                // abr = NULL;   //pas d'autre solution pour le moment
+                abr = NULL;   //pas d'autre solution pour le moment
                     if (abr == NULL)
                  {
 
