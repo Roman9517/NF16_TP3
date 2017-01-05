@@ -439,7 +439,6 @@ int supprimerTranche(Tranche *racine, int borneSup) //celui de Laure
 
 int supprimerTranche(Tranche *racine, int borneSup) //celui de Laure modifié par moi --> mais peut être faire des suppressions en tete comme j'avais fait pour les benevoles
 {
-    Benevole *ben = malloc(sizeof(Benevole));
     Tranche *parcours = racine;
 
     //si l'arbre est vide on renvoi une erreur
@@ -455,13 +454,15 @@ int supprimerTranche(Tranche *racine, int borneSup) //celui de Laure modifié pa
     //Si la tranche n'a aucun fils
     if(parcours->filsG == NULL && parcours->filsD == NULL)
     {
-        //on vide la tranche de ces benevole pour pouvoir liberer la memoire
-        ben=parcours->liste->premier;
-        while(ben!=NULL)  //faire suppression en tete non ?
+        //on vide la tranche de ses benevole pour pouvoir liberer la memoire
+        while(parcours->liste->premier!=NULL)
         {
-            supprimerBen(racine, ben->CID, ben->annee);
-            ben=ben->suivant;
+            Benevole *ben=parcours->liste->premier;
+            parcours->liste->premier=ben->suivant;
+            parcours->liste->nb--;
+            free(ben);
         }
+            
 
         if(parcours->pere->filsD == parcours)
             parcours->pere->filsD = NULL;
@@ -475,12 +476,14 @@ int supprimerTranche(Tranche *racine, int borneSup) //celui de Laure modifié pa
     if(parcours->filsG==NULL)
     {
         Tranche *tmp = parcours;
-        ben=parcours->liste->premier;
-        while(ben!=NULL)
+        while(parcours->liste->premier!=NULL)
         {
-            supprimerBen(racine, ben->CID, ben->annee);
-            ben=ben->suivant;
+            Benevole *ben=parcours->liste->premier;
+            parcours->liste->premier=ben->suivant;
+            parcours->liste->nb--;
+            free(ben);
         }
+               
         parcours->BorneSup=parcours->filsD->BorneSup;
         parcours->liste=parcours->filsD->liste;
         parcours->filsD=NULL;
@@ -514,19 +517,31 @@ int supprimerTranche(Tranche *racine, int borneSup) //celui de Laure modifié pa
     //on cherche la tranche minimum du fils droit
     while(tmp->filsG!=NULL)
         tmp=tmp->filsG;
-
-    ben=parcours->liste->premier;
-    while(ben!=NULL)
-    {
-        supprimerBen(racine, ben->CID, ben->annee);
-        ben=ben->suivant;
-    }
-
+    //Maintenant je vide la liste de la tranche à supprimer
+    Benevole *ben=parcours->liste->premier;
+    while(parcours->liste->premier!=NULL)
+        {
+            Benevole *ben=parcours->liste->premier;
+            parcours->liste->premier=ben->suivant;
+            parcours->liste->nb--;
+            free(ben);
+        }
+    //Je remplie à nouveau la liste avec celle de la tranche successeur (min du ss arbre droit), bene par bene
+    //Je change aussi la borne sup
     parcours->BorneSup=tmp->BorneSup;
-    parcours->liste=tmp->liste;
+    Benevole *courant = tmp->liste->premier;
+    while(courant!=NULL)
+    {
+        insererlist(parcours, courant);
+        courant=courant->suivant;
+    }
+    //Je supprime le successeur en faisant appel à supprimerTranche() --> 0 ou 1 fils donc suppression facile
     supprimerTranche(tmp, tmp->BorneSup);
     return 0;
 }
+
+
+
 
 
 ListBenevoles *BenDhonneur(Tranche *racine) //On part du principe qu'il n'y a pas de tranche d'age vide. OK
