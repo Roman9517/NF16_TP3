@@ -43,6 +43,7 @@ ListBenevoles *nouvelleListe()   //OK
 
 Tranche *ajoutTranche(Tranche *racine, int borneSup)  //OK, c'est plus propre !
 {
+    if(borneSup%5 ==0) {
     if (racine==NULL)
     {
         racine=nouvelleTranche(borneSup);
@@ -61,6 +62,7 @@ Tranche *ajoutTranche(Tranche *racine, int borneSup)  //OK, c'est plus propre !
         return racine;
     }
 
+} return racine; //On ne change rien puisque la borne sup n'est pas modulo 5
 }
 
 
@@ -79,7 +81,7 @@ int attribuerBorne(int annee)  //OK
     int age = anneeActuelle()-annee;
     int b=0;
     while(b <age)
-        b=b+4;
+        b=b+5;
     return b;
 }
 
@@ -585,29 +587,30 @@ ListBenevoles *BenDhonneur(Tranche *racine) //On part du principe qu'il n'y a pa
 int actualiser(Tranche *racine)
 {
     int nb=0;
-    int b=21;
+    int b=20;
     int max=bornemax(racine);
     Tranche *tr;
-    Benevole *tmp, *tmp1;
+    Benevole *tmp, *tmp1, tmp2;
     while(b<=max )
     {
         if(tr=chercherTranche(racine, b)!=NULL)
         {
             tmp=tr->liste->premier;
-            while(tmp!=NULL && tmp->annee <=tr->BorneSup)
+            while(tmp!=NULL && attribuerBorne(tmp->annee) <=tr->BorneSup)
             {
+                tmp2=tmp;
                 tmp=tmp->suivant;
             }
-            while (tmp->annee > tr->BorneSup)
+            while (attribuerBorne(tmp->annee) > tr->BorneSup)
             {
                 tmp1=tmp;
                 tmp=tmp->suivant;
+                tmp2->suivant=tmp;
                 insererBen(racine, tmp1);   //On insere a la bonne borne sup
-                free(tmp1); //on supprime de la liste actuelle
                 nb++;
             }
         }
-        b+=4;
+        b+=5;
     }
     return nb;
 }
@@ -653,7 +656,7 @@ int totalBen(Tranche *racine)  //OK !
     do
     {
         tot += totalBenTranche(racine, borneSup);
-        borneSup = borneSup + 4;
+        borneSup = borneSup + 5;
     } while (borneSup <= bmax);
     return tot;
 }
