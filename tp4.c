@@ -41,29 +41,33 @@ ListBenevoles *nouvelleListe()   //OK
 
 
 
-Tranche *ajoutTranche(Tranche *racine, int borneSup)  //OK, c'est plus propre !
-{
-    if(borneSup%5 ==0) {
-    if (racine==NULL)
+Tranche *ajoutTranche (Tranche *racine, int bornesup){
+    if(bornesup%5==0)
     {
-        racine=nouvelleTranche(borneSup);
-        return racine;
-    }
-    else
+    Tranche *tmp=racine;
+    Tranche *pere=NULL;
+    while(tmp!=NULL)
     {
-        if (borneSup < racine->BorneSup)
-        {
-            racine->filsG = ajoutTranche(racine->filsG, borneSup);
+        pere=tmp;
+        if(bornesup < tmp->BorneSup)
+            tmp=tmp->filsG;
+        else if(bornesup> tmp->BorneSup)
+            tmp=tmp->filsD;
+        else { printf("L'ajout ne se fait pas \n");
+            return racine;
         }
-        else if (borneSup > racine->BorneSup)
-        {
-            racine->filsD = ajoutTranche(racine->filsD, borneSup);
-        }
-        return racine;
     }
-
-} return racine; //On ne change rien puisque la borne sup n'est pas modulo 5
+    Tranche *nouveau=nouvelleTranche(bornesup);
+    nouveau->pere=pere;
+    if (pere==NULL)
+        racine=nouveau;
+    else if (nouveau->BorneSup < pere->BorneSup) pere->filsG=nouveau;
+    else pere->filsD=nouveau;
+    return racine;
+    }
 }
+
+
 
 
 int anneeActuelle()
@@ -265,92 +269,105 @@ int supprimerBen(Tranche *racine, int CIN, int annee)  //OK, il manque juste la 
 
 
 
-
-
-
-int supprimerTranche2(Tranche *racine, int bornesup) //celui de ROMAN
+int supprimerTranche(Tranche *racine, int borneSup)
 {
-    Tranche * tmp;
-    Tranche * p;
-    if (racine==NULL)
-        return 1;
-    if (chercherTranche(racine, bornesup) == NULL)
+    Tranche *parcours = racine;
+    //si l'arbre est vide on renvoie une erreur
+    if (parcours == NULL)
     {
-        printf("La tranche demandee n'existe pas. \n");
+        printf("l'arbre est vide ou n'existe pas");
         return 1;
     }
-    if(chercherTranche(racine, bornesup) != NULL)
-    {
-        printf("La tranche existe, nous allons la supprimer. \n");
-    }
-    tmp = chercherTranche(racine, bornesup);
-         while(tmp->liste->nb != 0) //supression de la liste de bénévoles
+    //on se positionne sur la tranche à supprimer
+    parcours = chercherTranche(racine, borneSup);
+    //On supprime tous les benevoles
+    while(parcours->liste->premier!=NULL)
         {
-            Benevole *ben=tmp->liste->premier;   //on supprime en tete
-            Benevole *ben1=tmp->liste->premier->suivant;
+            Benevole *ben=parcours->liste->premier;
+            parcours->liste->premier=ben->suivant;
+            parcours->liste->nb--;
             free(ben);
-            tmp->liste->premier=ben1;
-            tmp->liste->nb--;
         }
-        if(tmp->filsG == NULL)  // Cas pas de fils gauche
+    //Si la tranche n'a aucun fils ok
+    if(parcours->filsG == NULL && parcours->filsD == NULL)
+    {
+        if(parcours->pere!=NULL){ //si pas la racine
+        if(parcours->pere->filsD == parcours)
+            {
+                parcours->pere->filsD = NULL;
+            }
+        else if (parcours->pere->filsG == parcours)
         {
-            if (tmp->filsD == NULL)
+            parcours->pere->filsG = NULL;
+        }}
+        racine=NULL;
+        free(racine);
+        return 0;
+    }
+
+    //Si la tranche n'a pas de fils gauche
+    if(parcours->filsG==NULL)
+    {
+        if(parcours->pere !=NULL){ //si pas racine
+        if(parcours->pere->filsD == parcours)
             {
-                tmp->pere = NULL;
-                free(tmp);
-                return 0;
+                parcours->pere->filsD = parcours->filsD;
+                parcours->filsD->pere=parcours->pere;
             }
-            else //filsD != NULL
-            {
-                tmp->pere = tmp->filsD;
-                free(tmp);
-                return 0;
-            }
-        }
-        else // filG!=NULL
+        else
         {
-            if (tmp->filsD == NULL)
+            parcours->pere->filsG = parcours->filsD;
+            parcours->filsD->pere=parcours->pere;
+        }}
+        else {racine=parcours->filsD; //dans le cas où c'est la racine qu'on supprime
+            racine->pere=NULL;}
+
+        free(parcours);
+        return 0;
+    }
+
+    //si la tranche n'a pas de fils droit OK
+    else if (parcours->filsD==NULL)
+    {
+               if(parcours->pere != NULL){
+               if(parcours->pere->filsD == parcours)
             {
-                tmp->pere = tmp->filsG;
-                free(tmp);
-                return 0;
+                parcours->pere->filsD = parcours->filsG;
+                parcours->filsG->pere=parcours->pere;
             }
-            else //filsD != NULL
+            else
             {
-                printf("La ca fonctionne pas ! \n");
-                Tranche * courant = tmp->filsD;
-                while (courant->filsG != NULL)
-                {
-                    courant = courant->filsG;
-                    printf("test : %d", courant->BorneSup);
-                }
-                //tmp->BorneSup = courant->BorneSup;
-                //tmp->liste = courant->liste;
-                printf("passage 1 !!! \n");
-                if (courant->pere->filsG == courant)
-                {
-                    printf("passage 2 !!! \n");
-                    courant->pere->filsG = NULL;
-
-                }
-                else
-                {
-                    printf("passage 3 !!! \n");
-                    courant->pere->filsD = NULL;
-
-                }
-                free(courant);
-                return 0;
+                parcours->pere->filsG = parcours->filsG;
+                parcours->filsG->pere=parcours->pere;
+            }}
+            else //racine a supprimer
+            {
+                racine = parcours->filsG;
+                racine->pere=NULL;
             }
-            return 1;
-        }
+            free(parcours);
+            return 0;
+    }
 
+    //Si la tranche a deux fils
+    Tranche *tmp = parcours->filsD;
+    //on cherche la tranche minimum du fils droit
+    while(tmp->filsG!=NULL)
+        tmp=tmp->filsG;
+    //Je remplie à nouveau la liste avec celle de la tranche successeur (min du ss arbre droit), bene par bene
+    //Je change aussi la borne sup
+    parcours->BorneSup=tmp->BorneSup;
+    Benevole *courant = tmp->liste->premier;
+    while(courant!=NULL)
+    {
+        insererlist(parcours, courant);
+        courant=courant->suivant;
+    }
+    //Je supprime le successeur en faisant appel à supprimerTranche() --> 0 ou 1 fils donc suppression facile
+    tmp->BorneSup = borneSup; //la cle de la tranche que l'on voulait supprimer de base
+    supprimerTranche(tmp, tmp->BorneSup);
+    return 0;
 }
-
-
-
-
-
 
 
 
@@ -390,10 +407,6 @@ ListBenevoles *BenDhonneur(Tranche *racine) //On part du principe qu'il n'y a pa
 
     return honneur2;
 }
-
-
-
-
 
 
 
@@ -470,10 +483,6 @@ int actualiser(Tranche *racine) //fonctionne pour pas mal de cas
 
 
 
-
-
-
-
 int totalBenTranche(Tranche *racine, int borneSup)  //OK
 {
     int nb=0;
@@ -527,6 +536,7 @@ float pourcentageTranche(Tranche *racine, int borneSup) //ok
     return res*100;
 }
 
+
 void afficherBen(Benevole *ben)  //OK
 {
     while(ben!=NULL)
@@ -539,6 +549,7 @@ void afficherBen(Benevole *ben)  //OK
 void afficherTranche(Tranche *racine, int borneSup)  //OK
 {
     Tranche *tr=chercherTranche(racine, borneSup);
+    if(tr != NULL){
     Benevole *tmp=tr->liste->premier;
     if(tmp==NULL) printf("liste vide \n");
     else
@@ -546,13 +557,19 @@ void afficherTranche(Tranche *racine, int borneSup)  //OK
         printf("       nom         |        prenom       | sexe |        CID          | annee \n");
         afficherBen(tmp);
     }
+    }
+    else printf("la tranche n'existe pas \n");
 }
 
 
 
-void afficherArbre(Tranche *racine) //OK mais plutôt faire affichahe en ordre croissant
+void afficherArbre(Tranche *racine) //OK
 {
-    if (racine != NULL)
+    if (racine == NULL)
+    {
+        printf("arbre vide \n");
+    }
+    else if (racine!= NULL)
     {
         afficherArbre(racine->filsD);
         if (racine->filsD != NULL)
@@ -568,190 +585,18 @@ void afficherArbre(Tranche *racine) //OK mais plutôt faire affichahe en ordre c
     }
 }
 
-void detruire_Arbre(Tranche* racine) //Il faut faire appel à supprimerTranche non ?
+void detruire_Arbre(Tranche* racine) //OK
 {
     if (racine != NULL)
     {
     detruire_Arbre(racine->filsG);
     detruire_Arbre(racine->filsD);
-    supprimerTranche(racine, racine->BorneSup) ;  // les éléments de l'arbre sont mis à des valeurs aléatoires
+    supprimerTranche(racine, racine->BorneSup) ;
     }
 }
 
 
 /* Fonction qui ne sont pas utiles
-
-int supprimerTranche(Tranche *racine, int bornesup) //Le miens
-{
-    int i;
-    Tranche *p;
-    p=chercherTranche(racine, bornesup);
-    if(p==NULL) return 1;
-    else
-    {
-        Benevole *courant, *supp;
-        courant=p->liste->premier;
-        while(p->liste->nb != 0) //supression de la liste de bénévoles
-        {
-            Benevole *tmp=p->liste->premier;   //on supprime en tete
-            Benevole *tmp1=p->liste->premier->suivant;
-            free(tmp);
-            p->liste->premier=tmp1;
-            p->liste->nb--;
-        }
-        if(p->filsG==NULL && p->filsD==NULL)
-        {
-            if(p==p->pere->filsD)
-                p->pere->filsD=NULL;
-            else p->pere->filsG=NULL;
-            free(p);
-            return 0;
-        }
-        else
-        {
-            if(p->filsG==NULL || p->filsD==NULL)
-            {
-                if(p->filsG!=NULL)
-                {
-                    if(p==p->pere->filsD)
-                    {
-                        p->pere->filsD=p->filsG;
-                        p->filsG=NULL;
-                    }
-                    else
-                    {
-                        p->pere->filsG=p->filsG;
-                        p->filsG=NULL;
-                    }
-                }
-                else
-                {
-                    if(p==p->pere->filsD)
-                    {
-                        p->pere->filsD=p->filsD;
-                        p->filsD=NULL;
-                    }
-                    else
-                    {
-                        p->pere->filsG=p->filsD;
-                        p->filsD=NULL;
-                    }
-                }
-                free(p);
-                return 0;
-            }
-            else //si le noeud a 2 fils
-            {
-                Tranche *succ=p->filsD;
-                while(succ->filsG!=NULL)
-                {
-                    succ=succ->filsG;
-                }
-                int tmp;
-                ListBenevoles *ltmp;
-                tmp=p->BorneSup;
-                p->BorneSup = succ->BorneSup;
-                succ->BorneSup=tmp;
-                ltmp=p->liste;
-                p->liste=succ->liste;
-                succ->liste=ltmp;
-                i=supprimerTranche(succ, succ->BorneSup);
-            }
-        }
-    }
-}
-
-
-
-int supprimerTranche(Tranche *racine, int borneSup) //celui de Laure
-{
-    Benevole *ben = malloc(sizeof(Benevole));
-    Tranche *parcours = racine;
-    
-    //si l'arbre est vide on renvoi une erreur
-    if (parcours == NULL)
-    {
-        printf("l'arbre est vide ou n'existe pas");
-        return 1;
-    }
-    
-    //on se positionne sur la tranche à supprimer
-    parcours = succ_rec(racine, borneSup);
-    
-    //Si la tranche n'a aucun fils
-    if(parcours->filsG == NULL && parcours->filsD == NULL)
-    {
-        //on vide la tranche de ces benevole pour pouvoir liberer la memoire
-        ben=parcours->ListBenevoles.Benevole;
-        while(ben!=NULL)
-        {
-            supprimerBen(racine, ben->CIN, ben->Annee);
-            ben=ben->Suivant;
-        }
-        
-        if(parcours->pere->filsD == parcours)
-            parcours->pere->filsD = NULL;
-        else parcours->pere->filsG = NULL;
-        
-        free(parcours);
-        return 0;
-    }
-    
-    //Si la tranche n'a pas de fils gauche
-    if(parcours->filsG==NULL)
-    {
-        Tranche *tmp = parcours;
-        ben=parcours->ListBenevoles.Benevole;
-        while(ben!=NULL)
-        {
-            supprimerBen(racine, ben->CIN, ben->Annee);
-            ben=ben->Suivant;
-        }
-        parcours->BorneSup=parcours->filsD->BorneSup;
-        parcours->ListBenevoles=parcours->filsD->ListBenevoles;
-        parcours->filsD=NULL;
-        
-        free(tmp);
-        return 0;
-    }
-    
-    //si la tranche n'a pas de fils droit
-    if (parcours->filsD==NULL)
-    {
-        Tranche *tmp = parcours;
-        ben=parcours->ListBenevoles.Benevole;
-        while(ben!=NULL)
-        {
-            supprimerBen(racine, ben->CIN, ben->Annee);
-            ben=ben->Suivant;
-        }
-        
-        parcours->BorneSup=parcours->filsG->BorneSup;
-        parcours->ListBenevoles=parcours->filsG->ListBenevoles;
-        parcours->filsG=NULL;
-        
-        free(tmp);
-        return 0;
-    }
-    
-    //Si la tranche a deux fils
-    
-    Tranche *tmp = parcours;
-    //on cherche la tranche minimum du fils droit
-    tmp=my_min(parcours->filsD);
-    
-    ben=parcours->ListBenevoles.Benevole;
-    while(ben!=NULL)
-    {
-        supprimerBen(racine, ben->CIN, ben->Annee);
-        ben=ben->Suivant;
-    }
-    
-    parcours->BorneSup=tmp->BorneSup;
-    parcours->ListBenevoles=tmp->ListBenevoles;
-    supprimerTranche(tmp, tmp->BorneSup);
-    return 0;   
-}
 
 
 /*int actualiser(Tranche *racine)
@@ -783,110 +628,10 @@ int supprimerTranche(Tranche *racine, int borneSup) //celui de Laure
         b+=5;
     }
     return nb;
-} 
-
-int supprimerTranche(Tranche *racine, int borneSup) //celui de Laure modifié par moi --> mais peut être faire des suppressions en tete comme j'avais fait pour les benevoles
-{
-    Tranche *parcours = racine;
-
-    //si l'arbre est vide on renvoi une erreur
-    if (parcours == NULL)
-    {
-        printf("l'arbre est vide ou n'existe pas");
-        return 1;
-    }
-
-    //on se positionne sur la tranche à supprimer
-    parcours = chercherTranche(racine, borneSup);
-
-    //Si la tranche n'a aucun fils
-    if(parcours->filsG == NULL && parcours->filsD == NULL)
-    {
-        //on vide la tranche de ses benevole pour pouvoir liberer la memoire
-        while(parcours->liste->premier!=NULL)
-        {
-            Benevole *ben=parcours->liste->premier;
-            parcours->liste->premier=ben->suivant;
-            parcours->liste->nb--;
-            free(ben);
-        }
-            
-
-        if(parcours->pere->filsD == parcours)
-            parcours->pere->filsD = NULL;
-        else parcours->pere->filsG = NULL;
-
-        free(parcours);
-        return 0;
-    }
-
-    //Si la tranche n'a pas de fils gauche
-    if(parcours->filsG==NULL)
-    {
-        Tranche *tmp = parcours;
-        while(parcours->liste->premier!=NULL)
-        {
-            Benevole *ben=parcours->liste->premier;
-            parcours->liste->premier=ben->suivant;
-            parcours->liste->nb--;
-            free(ben);
-        }
-               
-        parcours->BorneSup=parcours->filsD->BorneSup;
-        parcours->liste=parcours->filsD->liste;
-        parcours->filsD=NULL;
-
-        free(tmp);
-        return 0;
-    }
-
-    //si la tranche n'a pas de fils droit
-    if (parcours->filsD==NULL)
-    {
-        Tranche *tmp = parcours;
-        ben=parcours->liste->premier;
-        while(ben!=NULL) //idem faire plutôt en tete non ?
-        {
-            supprimerBen(racine, ben->CID, ben->annee);
-            ben=ben->suivant;
-        }
-
-        parcours->BorneSup=parcours->filsG->BorneSup;
-        parcours->liste=parcours->filsG->liste;
-        parcours->filsG=NULL;
-
-        free(tmp);
-        return 0;
-    }
-
-    //Si la tranche a deux fils
-
-    Tranche *tmp = parcours->filsD;
-    //on cherche la tranche minimum du fils droit
-    while(tmp->filsG!=NULL)
-        tmp=tmp->filsG;
-    //Maintenant je vide la liste de la tranche à supprimer
-    Benevole *ben=parcours->liste->premier;
-    while(parcours->liste->premier!=NULL)
-        {
-            Benevole *ben=parcours->liste->premier;
-            parcours->liste->premier=ben->suivant;
-            parcours->liste->nb--;
-            free(ben);
-        }
-    //Je remplie à nouveau la liste avec celle de la tranche successeur (min du ss arbre droit), bene par bene
-    //Je change aussi la borne sup
-    parcours->BorneSup=tmp->BorneSup;
-    Benevole *courant = tmp->liste->premier;
-    while(courant!=NULL)
-    {
-        insererlist(parcours, courant);
-        courant=courant->suivant;
-    }
-    //Je supprime le successeur en faisant appel à supprimerTranche() --> 0 ou 1 fils donc suppression facile
-    supprimerTranche(tmp, tmp->BorneSup);
-    return 0;
 }
+
+
+
 
 Tranche * racinePremiere(Tranche * racine){
 	Tranche *tmp=racine;
@@ -895,7 +640,6 @@ Tranche * racinePremiere(Tranche * racine){
     }
     return tmp;
 }
-
 int actualiser(Tranche *racine){   //nouveau test
 	int annee=anneeActuelle();
 	int total=0;
@@ -925,10 +669,6 @@ int actualiser(Tranche *racine){   //nouveau test
 		tmp_ben=tmp_ben->suivant;
 	}
 	return total;
-
 }
-
-
-
-
 */
+
