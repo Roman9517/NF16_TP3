@@ -438,6 +438,86 @@ int supprimerTranche(Tranche *racine, int borneSup) //celui de Laure
 }
 
 
+int supprimerTranche2(Tranche *racine, int bornesup) //celui de ROMAN
+{
+    Tranche * tmp;
+    Tranche * p;
+    if (racine==NULL)
+        return 1;
+    if (chercherTranche(racine, bornesup) == NULL)
+    {
+        printf("La tranche demandee n'existe pas. \n");
+        return 1;
+    }
+    if(chercherTranche(racine, bornesup) != NULL)
+    {
+        printf("La tranche existe, nous allons la supprimer. \n");
+    }
+    tmp = chercherTranche(racine, bornesup);
+         while(tmp->liste->nb != 0) //supression de la liste de bénévoles
+        {
+            Benevole *ben=tmp->liste->premier;   //on supprime en tete
+            Benevole *ben1=tmp->liste->premier->suivant;
+            free(ben);
+            tmp->liste->premier=ben1;
+            tmp->liste->nb--;
+        }
+        if(tmp->filsG == NULL)  // Cas pas de fils gauche
+        {
+            if (tmp->filsD == NULL)
+            {
+                tmp->pere = NULL;
+                free(tmp);
+                return 0;
+            }
+            else //filsD != NULL
+            {
+                tmp->pere = tmp->filsD;
+                free(tmp);
+                return 0;
+            }
+        }
+        else // filG!=NULL
+        {
+            if (tmp->filsD == NULL)
+            {
+                tmp->pere = tmp->filsG;
+                free(tmp);
+                return 0;
+            }
+            else //filsD != NULL
+            {
+                printf("La ca fonctionne pas ! \n");
+                Tranche * courant = tmp->filsD;
+                while (courant->filsG != NULL)
+                {
+                    courant = courant->filsG;
+                    printf("test : %d", courant->BorneSup);
+                }
+                //tmp->BorneSup = courant->BorneSup;
+                //tmp->liste = courant->liste;
+                printf("passage 1 !!! \n");
+                if (courant->pere->filsG == courant)
+                {
+                    printf("passage 2 !!! \n");
+                    courant->pere->filsG = NULL;
+
+                }
+                else
+                {
+                    printf("passage 3 !!! \n");
+                    courant->pere->filsD = NULL;
+
+                }
+                free(courant);
+                return 0;
+            }
+            return 1;
+        }
+
+}
+
+
 
 int supprimerTranche(Tranche *racine, int borneSup) //celui de Laure modifié par moi --> mais peut être faire des suppressions en tete comme j'avais fait pour les benevoles
 {
@@ -615,6 +695,81 @@ ListBenevoles *BenDhonneur(Tranche *racine) //On part du principe qu'il n'y a pa
     return nb;
 } */
 
+
+
+
+/*
+/*int actualiser(Tranche *racine) //fonctionne pour pas mal de cas
+{
+    int max=bornemax(racine);
+    int nb=0;
+    int b=15;
+    Tranche *tr;
+    Benevole *tmp, *tmp1, *tmp2;
+    while (b <= bornemax(racine))
+    {
+        if (chercherTranche(racine, b) != NULL) //On entre dans la tranche si elle existe
+        {
+            tr = chercherTranche(racine, b);
+            if (tr->liste->premier != NULL) //si il y a au moins un benevole on le récupère avec tmp
+            {
+                tmp = tr->liste->premier;
+                tmp2 = tmp;
+            }
+            while(tmp!=NULL) //tant qu'on a un benevole
+            {
+                if (attribuerBorne(tmp->annee) >tr->BorneSup) //si on est supérieur à la borne sup on insère là où il faut!
+                {
+                    tmp1 = tmp;
+                    insererBen(racine, tmp);   //On insere a la bonne borne sup
+                    tmp = tmp1;
+                    if (tmp == tr->liste->premier) //si c'est le premier
+                    {
+                        if (tmp ->suivant == NULL) //si il est seul    Ce cas fonctionne
+                        {
+                            tr->liste->premier = NULL; //on met à nul
+                            tmp = NULL;
+                            printf("Actualisation de type1\n");
+                        }
+                        else //sinon on met au suivant
+                        {
+                            tr->liste->premier = tmp->suivant;
+                            tmp = tmp->suivant;
+                            printf("type2 : %d\n", tmp1->CID);
+                        }
+                    }
+                    else if (tmp->suivant != NULL) //si c'est le cas général
+                    {
+                        tmp2->suivant = tmp->suivant;
+                        tmp1 = tmp;
+                        tmp = tmp->suivant;
+                        tmp1->suivant = NULL;
+                        printf("Actualisation de type3\n");
+                    }
+                    else if(tmp ->suivant == NULL)
+                    {
+                        tmp2->suivant = NULL;
+                        tmp = NULL;
+                        printf("Actualisation de type4\n");
+                    }
+                    nb++;
+                }
+                else
+                {
+                    if (tmp2->CID != tmp->CID) //pour que tmp2 soit juste derriere tmp
+                    {
+                      tmp2=tmp2->suivant;
+                    }
+                    tmp = tmp->suivant; //On avance
+                }
+
+            }
+        }
+        b = b+1;
+    }
+    return nb;
+}*/
+*/
 Tranche * racinePremiere(Tranche * racine){
 	Tranche *tmp=racine;
     while(tmp->pere != NULL){
@@ -623,7 +778,7 @@ Tranche * racinePremiere(Tranche * racine){
     return tmp;
 }
 
-int actualiser(Tranche *racine){
+int actualiser(Tranche *racine){   //nouveau test
 	int annee=anneeActuelle();
 	int total=0;
 	Tranche *tmp=racine;
