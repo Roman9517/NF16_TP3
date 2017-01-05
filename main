@@ -22,6 +22,7 @@ void main()
     char sexe=' ';
     Benevole *ben;
     Tranche *abr=NULL;
+    Tranche *p=NULL;
     ListBenevoles *listeHonneur;
     //extern ListeTranche *l;
     Tranche *ty;
@@ -89,8 +90,8 @@ void main()
 
         case 7 : printf("Quelle borne sup ?\n");
                  scanf("%d", &b);
-                 supprimerTranche2(abr, b);
-                // afficherArbre(abr);
+                 supprimerTranche(abr, b);
+                 afficherArbre(abr);
                  break;
 
         case 8 :  // OK !
@@ -112,13 +113,12 @@ void main()
                   break;
 
         case 12 : detruire_Arbre(abr);
-                abr = NULL;   //pas d'autre solution pour le moment
                     if (abr == NULL)
                  {
 
                   printf("L'arbre a bien ete supprime ! \n");
                  }
-                
+                 // abr = NULL;   //pas d'autre solution pour le moment
                   break;
 
 
