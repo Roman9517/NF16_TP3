@@ -584,7 +584,7 @@ ListBenevoles *BenDhonneur(Tranche *racine) //On part du principe qu'il n'y a pa
 }
 
 
-int actualiser(Tranche *racine)
+/*int actualiser(Tranche *racine)
 {
     int nb=0;
     int b=20;
@@ -613,6 +613,46 @@ int actualiser(Tranche *racine)
         b+=5;
     }
     return nb;
+} */
+
+Tranche * racinePremiere(Tranche * racine){
+	Tranche *tmp=racine;
+    while(tmp->pere != NULL){
+        tmp = tmp->pere;
+    }
+    return tmp;
+}
+
+int actualiser(Tranche *racine){
+	int annee=anneeActuelle();
+	int total=0;
+	Tranche *tmp=racine;
+	Benevole *tmp_pre=NULL;
+	Benevole *tmp_ben;
+	if(tmp->filsD!=NULL)
+		total+=actualiser(tmp->filsD);
+	if(tmp->filsG!=NULL)
+		total+=actualiser(tmp->filsG);
+	tmp_ben=tmp->liste->premier;
+	while(tmp_ben!=NULL){
+		//printf("**\n");
+		if(attribuerBorne(tmp_ben->annee)!=tmp->BorneSup){
+			//printf("sss\n");
+			insererBen(racinePremiere(tmp),tmp_ben);
+			total++;
+			//supprimerBen(tmp,tmp_ben->id,tmp_ben->annee);
+			if(tmp_pre==NULL){
+				tmp->liste->premier=tmp_ben->suivant;
+			}
+			else{
+				tmp_pre->suivant=tmp_ben->suivant;
+			}
+		}
+		tmp_pre=tmp_ben;
+		tmp_ben=tmp_ben->suivant;
+	}
+	return total;
+
 }
 
 
