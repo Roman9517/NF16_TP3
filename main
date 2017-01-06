@@ -17,6 +17,7 @@ static void purger(void)
 
 void main()
 {
+    printf("Bonjour Monsieur, pour que votre test aille plus vite, nous avons mis en commentaire les scanfs et mis les fonctions avec des valeurs brutes. \n");
     int choix, b, CID, annee;
     char nom[NMAX], prenom[NMAX];
     char sexe=' ';
@@ -36,13 +37,14 @@ void main()
                  printf("L'arbre a bien ete initialise. \n");
                  break;
 
-        case 2 :    printf("Nous allons ajouter un noeud a l'arbre, quelle est la borne superieur ?\n");  //OK
-                    scanf("%d", &b);
-                    abr=ajoutTranche(abr, b);
+        case 2 :    printf("Nous allons ajouter un noeud a l'arbre de borne supérieur 20.\n");
+                    //printf("Nous allons ajouter un noeud a l'arbre, quelle est la borne superieur ?\n");
+                    //scanf("%d", &b);
+                    abr=ajoutTranche(abr, 20);
                     break;
 
-        case 3 :   // OK
-                 printf("saisir le nom\n");
+        case 3 : 
+                 /*printf("saisir le nom\n");
                  scanf("%s", nom);
                  printf("saisir le prenom\n");
                  scanf("%s", prenom);
@@ -52,33 +54,36 @@ void main()
                  printf("saisir le CID\n");
                  scanf("%d", &CID);
                  printf("saisir l'annee de naissance\n");
-                 scanf("%d", &annee);
-                 ben=nouveauBen(nom, prenom, CID, sexe,annee);
+                 scanf("%d", &annee);*/
+                 printf("Nous allons insérer un bénévole ! \");
+                 ben=nouveauBen(FLANTIER, NOEL, 117, M,1972);
                  insererBen(abr, ben);
                  break;
 
-        case 4 : printf("Voici l'arbre dans l'ordre decroissant : \n \n");  //OK
+        case 4 : printf("Voici l'arbre dans l'ordre decroissant : \n \n");
                  afficherArbre(abr);
                  printf("\n");
 
                  break;
 
-        case 5 : printf("Quelle est la borne superieur de la tranche a afficher ?\n");  //OK
-                 scanf("%d", &b);
-                 if (chercherTranche(abr, b) == NULL)
+        case 5 : //printf("Quelle est la borne superieur de la tranche a afficher ?\n"); 
+                 //scanf("%d", &b);
+                 printf("Nous allons chercher et afficher la tranche de borne sup 45, qui contient normalement notre bénévole de test.\n");
+                 if (chercherTranche(abr, 45) == NULL)
                  {
                      printf("Desole, cette tranche n'existe pas. \n");
                  }
                  else
                  {
-                     afficherTranche(abr, b);
+                     afficherTranche(abr, 45);
                  }
                  break;
 
-        case 6 : printf("Quel CIN puis quelle annee de naissance?\n"); // OK ! Mais ne supprime pas la branche si elle est vide !
-                 scanf("%d %d", &CID, &annee);
+        case 6 : //printf("Quel CIN puis quelle annee de naissance?\n");
+                 //scanf("%d %d", &CID, &annee);
                  //supprimerBen(abr, CID, annee);
-                 if (supprimerBen(abr, CID, annee) == 0)
+                 printf("Maintenant nous allons supprimer notre bénévole de test\n");
+                 if (supprimerBen(abr, 117, 1972) == 0)
                  {
                      printf("Benevole supprimer avec succes ! \n");
                  }
@@ -88,27 +93,30 @@ void main()
                  }
                  break;
 
-        case 7 : printf("Quelle borne sup ?\n");
-                 scanf("%d", &b);
-                 supprimerTranche(abr, b);
+        case 7 : //printf("Quelle borne sup ?\n");
+                 //scanf("%d", &b);
+                 printf("Nous allons maintenant supprimer la tranche 45. \n");
+                 supprimerTranche(abr, 45);
                  afficherArbre(abr);
                  break;
 
-        case 8 :  // OK !
+        case 8 : 
                  listeHonneur =BenDhonneur(abr);
                  printf("       nom         |        prenom       | sexe |        CID          | annee \n");
                  afficherBen(listeHonneur->premier);
                  break;
 
-        case 9 : printf("Nombre total de benevoles : %d\n", totalBen(abr));  //OK
+        case 9 : printf("Nombre total de benevoles : %d\n", totalBen(abr));  
                  break;
 
         case 10 : printf("Nombre de benevoles actualises : %d\n", actualiser(abr));
                   break;
 
-        case 11 :  //OK
-                  printf("Quelle borne sup ?\n");
-                  scanf("%d", &b);
+        case 11 : 
+                  //printf("Quelle borne sup ?\n");
+                  //scanf("%d", &b);
+                  printf("Nous allons afficher le pourcentage de bénévole entre 41 et 45 ans!\n");
+                  b=45;
                   printf("Pourcentage de benevoles entre %d ans et %d ans : %f \n", b-4, b, pourcentageTranche(abr, b));
                   break;
 
@@ -118,7 +126,6 @@ void main()
 
                   printf("L'arbre a bien ete supprime ! \n");
                  }
-                 // abr = NULL;   //pas d'autre solution pour le moment
                   break;
 
 
