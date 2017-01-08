@@ -21,7 +21,7 @@ void main()
     int choix, b, CID, annee;
     char nom[NMAX], prenom[NMAX];
     char sexe=' ';
-    Benevole *ben;
+    Benevole *ben, *ben1, *ben2;
     Tranche *abr=NULL;
     Tranche *p=NULL;
     ListBenevoles *listeHonneur;
@@ -43,7 +43,7 @@ void main()
                     abr=ajoutTranche(abr, 20);
                     break;
 
-        case 3 : 
+        case 3 :
                  /*printf("saisir le nom\n");
                  scanf("%s", nom);
                  printf("saisir le prenom\n");
@@ -55,9 +55,14 @@ void main()
                  scanf("%d", &CID);
                  printf("saisir l'annee de naissance\n");
                  scanf("%d", &annee);*/
-                 printf("Nous allons insérer un bénévole ! \");
-                 ben=nouveauBen(FLANTIER, NOEL, 117, M,1972);
+                 printf("Nous allons insErer un benevole ! \n");
+                 ben=nouveauBen("FLANTIER", "NOEL", 117, "M",1972);
                  insererBen(abr, ben);
+                 printf("Nous allons insErer deux autres benevoles \n");
+                 ben1=nouveauBen("DUPONT", "JEAN", 118, "M",1996);
+                 insererBen(abr, ben1);
+                 ben2=nouveauBen("FLAMENT", "DIANE", 134, "F",1997);
+                 insererBen(abr, ben2);
                  break;
 
         case 4 : printf("Voici l'arbre dans l'ordre decroissant : \n \n");
@@ -66,7 +71,7 @@ void main()
 
                  break;
 
-        case 5 : //printf("Quelle est la borne superieur de la tranche a afficher ?\n"); 
+        case 5 : //printf("Quelle est la borne superieur de la tranche a afficher ?\n");
                  //scanf("%d", &b);
                  printf("Nous allons chercher et afficher la tranche de borne sup 45, qui contient normalement notre bénévole de test.\n");
                  if (chercherTranche(abr, 45) == NULL)
@@ -100,19 +105,19 @@ void main()
                  afficherArbre(abr);
                  break;
 
-        case 8 : 
+        case 8 :
                  listeHonneur =BenDhonneur(abr);
                  printf("       nom         |        prenom       | sexe |        CID          | annee \n");
                  afficherBen(listeHonneur->premier);
                  break;
 
-        case 9 : printf("Nombre total de benevoles : %d\n", totalBen(abr));  
+        case 9 : printf("Nombre total de benevoles : %d\n", totalBen(abr));
                  break;
 
         case 10 : printf("Nombre de benevoles actualises : %d\n", actualiser(abr));
                   break;
 
-        case 11 : 
+        case 11 :
                   //printf("Quelle borne sup ?\n");
                   //scanf("%d", &b);
                   printf("Nous allons afficher le pourcentage de bénévole entre 41 et 45 ans!\n");
