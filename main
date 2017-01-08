@@ -37,7 +37,7 @@ void main()
                  printf("L'arbre a bien ete initialise. \n");
                  break;
 
-        case 2 :    printf("Nous allons ajouter un noeud a l'arbre de borne supérieur 20.\n");
+        case 2 :    printf("Nous allons ajouter un noeud a l'arbre de borne superieure 20.\n");
                     //printf("Nous allons ajouter un noeud a l'arbre, quelle est la borne superieur ?\n");
                     //scanf("%d", &b);
                     abr=ajoutTranche(abr, 20);
@@ -55,13 +55,13 @@ void main()
                  scanf("%d", &CID);
                  printf("saisir l'annee de naissance\n");
                  scanf("%d", &annee);*/
-                 printf("Nous allons insErer un benevole ! \n");
-                 ben=nouveauBen("FLANTIER", "NOEL", 117, "M",1972);
+                 printf("Nous allons inserer un benevole ! \n");
+                 ben=nouveauBen("FLANTIER", "NOEL", 117, 'M',1972);
                  insererBen(abr, ben);
-                 printf("Nous allons insErer deux autres benevoles \n");
-                 ben1=nouveauBen("DUPONT", "JEAN", 118, "M",1997);
+                 printf("Nous allons inserer deux autres benevoles \n");
+                 ben1=nouveauBen("DUPONT", "JEAN", 118, 'M',1997);
                  insererBen(abr, ben1);
-                 ben2=nouveauBen("FLAMENT", "DIANE", 134, "F",1998);
+                 ben2=nouveauBen("FLAMENT", "DIANE", 134, 'F',1998);
                  insererBen(abr, ben2);
                  break;
 
@@ -128,7 +128,7 @@ void main()
         case 11 :
                   //printf("Quelle borne sup ?\n");
                   //scanf("%d", &b);
-                  printf("Nous allons afficher le pourcentage de bénévole entre 41 et 45 ans!\n");
+                  printf("Nous allons afficher le pourcentage de benevoles entre 41 et 45 ans!\n");
                   b=45;
                   printf("nombre de bene dans tranche 45 : %d \n", totalBenTranche(abr, b));
                   printf("Pourcentage de benevoles entre %d ans et %d ans : %f \n", b-4, b, pourcentageTranche(abr, b));
@@ -153,4 +153,3 @@ void main()
     }
     } while(choix!=13);
 }
-
