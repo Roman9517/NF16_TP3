@@ -530,10 +530,10 @@ int totalBen(Tranche *racine)  //OK !
 float pourcentageTranche(Tranche *racine, int borneSup) //ok
 {
     float res=0;
-    int t;
-    if(t=totalBen(racine)!=0)
-        res=(((float)totalBenTranche(racine, borneSup)) / t);
-    return res*100;
+    int t=totalBen(racine);
+    if(t!=0)
+        res=((float)(totalBenTranche(racine, borneSup)/ t));
+    return (res*100);
 }
 
 
