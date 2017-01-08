@@ -530,10 +530,11 @@ int totalBen(Tranche *racine)  //OK !
 float pourcentageTranche(Tranche *racine, int borneSup) //ok
 {
     float res=0;
-    int t=totalBen(racine);
-    if(t!=0)
-        res=((float)(totalBenTranche(racine, borneSup)/ t));
-    return (res*100);
+    int t;
+    if(totalBen(racine)!=0)  //on vérifie qu'il y a bien des bénévoles dans l'arbre
+        t = (totalBen(racine));  // t = nombre total de bénévoles
+        res=(((float)totalBenTranche(racine, borneSup)) / t);  //on divise le nb de béné dans la tranche par le nombre total
+    return res*100; // et ça fonctionne ! :p
 }
 
 
