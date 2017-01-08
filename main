@@ -59,9 +59,9 @@ void main()
                  ben=nouveauBen("FLANTIER", "NOEL", 117, "M",1972);
                  insererBen(abr, ben);
                  printf("Nous allons insErer deux autres benevoles \n");
-                 ben1=nouveauBen("DUPONT", "JEAN", 118, "M",1996);
+                 ben1=nouveauBen("DUPONT", "JEAN", 118, "M",1997);
                  insererBen(abr, ben1);
-                 ben2=nouveauBen("FLAMENT", "DIANE", 134, "F",1997);
+                 ben2=nouveauBen("FLAMENT", "DIANE", 134, "F",1998);
                  insererBen(abr, ben2);
                  break;
 
@@ -73,7 +73,7 @@ void main()
 
         case 5 : //printf("Quelle est la borne superieur de la tranche a afficher ?\n");
                  //scanf("%d", &b);
-                 printf("Nous allons chercher et afficher la tranche de borne sup 45, qui contient normalement notre bénévole de test.\n");
+                 /*printf("Nous allons chercher et afficher la tranche de borne sup 45, qui contient normalement notre bénévole de test.\n");
                  if (chercherTranche(abr, 45) == NULL)
                  {
                      printf("Desole, cette tranche n'existe pas. \n");
@@ -81,16 +81,24 @@ void main()
                  else
                  {
                      afficherTranche(abr, 45);
+                 }*/
+                 if (chercherTranche(abr, 20) == NULL)
+                 {
+                     printf("Desole, cette tranche n'existe pas. \n");
+                 }
+                 else
+                 {
+                     afficherTranche(abr, 20);
                  }
                  break;
 
         case 6 : //printf("Quel CIN puis quelle annee de naissance?\n");
                  //scanf("%d %d", &CID, &annee);
                  //supprimerBen(abr, CID, annee);
-                 printf("Maintenant nous allons supprimer notre bénévole de test\n");
-                 if (supprimerBen(abr, 117, 1972) == 0)
+                 printf("Maintenant nous allons supprimer notre deuxieme benevole de test\n");
+                 if (supprimerBen(abr, 118, 1997) == 0)
                  {
-                     printf("Benevole supprimer avec succes ! \n");
+                     printf("Benevole supprime avec succes ! \n");
                  }
                  else
                  {
@@ -122,6 +130,7 @@ void main()
                   //scanf("%d", &b);
                   printf("Nous allons afficher le pourcentage de bénévole entre 41 et 45 ans!\n");
                   b=45;
+                  printf("nombre de bene dans tranche 45 : %d \n", totalBenTranche(abr, b));
                   printf("Pourcentage de benevoles entre %d ans et %d ans : %f \n", b-4, b, pourcentageTranche(abr, b));
                   break;
 
@@ -144,3 +153,4 @@ void main()
     }
     } while(choix!=13);
 }
+
