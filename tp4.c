@@ -92,14 +92,14 @@ int attribuerBorne(int annee)  //OK
 
 ListBenevoles *insererlist(Tranche *tr, Benevole *bene)  //OK
 {
-    if (tr->liste->nb==0)
+    if(tr->liste->nb==0)
     {
         tr->liste->premier=bene;
-        tr->liste->nb=1;
+        tr->liste->nb++;
         printf("nb=0\n");
         return bene;                            //OK jusque ici
     }
-    else if (tr->liste->premier->annee <= bene->annee)  //ajout en tete
+    else if(tr->liste->premier->annee <= bene->annee)  //ajout en tete
     {
         bene->suivant=tr->liste->premier;
         tr->liste->nb++;
@@ -565,11 +565,8 @@ void afficherTranche(Tranche *racine, int borneSup)  //OK
 
 void afficherArbre(Tranche *racine) //OK
 {
-    if (racine == NULL)
-    {
-        printf("arbre vide \n");
-    }
-    else if (racine!= NULL)
+
+    if (racine!= NULL)
     {
         afficherArbre(racine->filsD);
         if (racine->filsD != NULL)
@@ -585,6 +582,7 @@ void afficherArbre(Tranche *racine) //OK
     }
 }
 
+
 void detruire_Arbre(Tranche* racine) //OK
 {
     if (racine != NULL)
@@ -595,80 +593,4 @@ void detruire_Arbre(Tranche* racine) //OK
     }
 }
 
-
-/* Fonction qui ne sont pas utiles
-
-
-/*int actualiser(Tranche *racine)
-{
-    int nb=0;
-    int b=20;
-    int max=bornemax(racine);
-    Tranche *tr;
-    Benevole *tmp, *tmp1, tmp2;
-    while(b<=max )
-    {
-        if(tr=chercherTranche(racine, b)!=NULL)
-        {
-            tmp=tr->liste->premier;
-            while(tmp!=NULL && attribuerBorne(tmp->annee) <=tr->BorneSup)
-            {
-                tmp2=tmp;
-                tmp=tmp->suivant;
-            }
-            while (attribuerBorne(tmp->annee) > tr->BorneSup)
-            {
-                tmp1=tmp;
-                tmp=tmp->suivant;
-                tmp2->suivant=tmp;
-                insererBen(racine, tmp1);   //On insere a la bonne borne sup
-                nb++;
-            }
-        }
-        b+=5;
-    }
-    return nb;
-}
-
-
-
-
-Tranche * racinePremiere(Tranche * racine){
-	Tranche *tmp=racine;
-    while(tmp->pere != NULL){
-        tmp = tmp->pere;
-    }
-    return tmp;
-}
-int actualiser(Tranche *racine){   //nouveau test
-	int annee=anneeActuelle();
-	int total=0;
-	Tranche *tmp=racine;
-	Benevole *tmp_pre=NULL;
-	Benevole *tmp_ben;
-	if(tmp->filsD!=NULL)
-		total+=actualiser(tmp->filsD);
-	if(tmp->filsG!=NULL)
-		total+=actualiser(tmp->filsG);
-	tmp_ben=tmp->liste->premier;
-	while(tmp_ben!=NULL){
-		//printf("**\n");
-		if(attribuerBorne(tmp_ben->annee)!=tmp->BorneSup){
-			//printf("sss\n");
-			insererBen(racinePremiere(tmp),tmp_ben);
-			total++;
-			//supprimerBen(tmp,tmp_ben->id,tmp_ben->annee);
-			if(tmp_pre==NULL){
-				tmp->liste->premier=tmp_ben->suivant;
-			}
-			else{
-				tmp_pre->suivant=tmp_ben->suivant;
-			}
-		}
-		tmp_pre=tmp_ben;
-		tmp_ben=tmp_ben->suivant;
-	}
-	return total;
-}
-*/
 
