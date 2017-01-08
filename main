@@ -115,7 +115,7 @@ void main()
 
         case 8 :
                  listeHonneur =BenDhonneur(abr);
-                 printf("       nom         |        prenom       | sexe |        CID          | annee \n");
+                 printf("nom|        prenom| sexe |    CID    | annee \n");
                  afficherBen(listeHonneur->premier);
                  break;
 
