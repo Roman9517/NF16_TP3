@@ -55,10 +55,10 @@ void main()
                  scanf("%d", &CID);
                  printf("saisir l'annee de naissance\n");
                  scanf("%d", &annee);*/
-                 printf("Nous allons inserer un benevole ! \n");
+                 printf("Nous allons inserer un benevole dans la tranche 45! \n");
                  ben=nouveauBen("FLANTIER", "NOEL", 117, 'M',1972);
                  insererBen(abr, ben);
-                 printf("Nous allons inserer deux autres benevoles \n");
+                 printf("Nous allons inserer deux autres benevoles dans la tranche 20 \n");
                  ben1=nouveauBen("DUPONT", "JEAN", 118, 'M',1997);
                  insererBen(abr, ben1);
                  ben2=nouveauBen("FLAMENT", "DIANE", 134, 'F',1998);
