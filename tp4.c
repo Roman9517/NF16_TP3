@@ -53,7 +53,7 @@ Tranche *ajoutTranche (Tranche *racine, int bornesup){
             tmp=tmp->filsG;
         else if(bornesup> tmp->BorneSup)
             tmp=tmp->filsD;
-        else { printf("L'ajout ne se fait pas \n");
+        else { 
             return racine;
         }
     }
