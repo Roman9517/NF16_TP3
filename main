@@ -135,6 +135,7 @@ void main()
                   break;
 
         case 12 : detruire_Arbre(abr);
+                    abr = NULL;
                     if (abr == NULL)
                  {
 
