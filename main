@@ -73,7 +73,6 @@ void main()
 
         case 5 : //printf("Quelle est la borne superieur de la tranche a afficher ?\n");
                  //scanf("%d", &b);
-                 /*printf("Nous allons chercher et afficher la tranche de borne sup 45, qui contient normalement notre bénévole de test.\n");
                  if (chercherTranche(abr, 45) == NULL)
                  {
                      printf("Desole, cette tranche n'existe pas. \n");
@@ -82,6 +81,7 @@ void main()
                  {
                      afficherTranche(abr, 45);
                  }*/
+                 printf("Nous allons afficher les benevoles de la tranche de bornesup 20 \n");
                  if (chercherTranche(abr, 20) == NULL)
                  {
                      printf("Desole, cette tranche n'existe pas. \n");
@@ -108,6 +108,7 @@ void main()
 
         case 7 : //printf("Quelle borne sup ?\n");
                  //scanf("%d", &b);
+                 //Ne pas executer ce case si vous voulez tester la fonction pourcentageTranche()
                  printf("Nous allons maintenant supprimer la tranche 45. \n");
                  supprimerTranche(abr, 45);
                  afficherArbre(abr);
@@ -138,7 +139,6 @@ void main()
                     abr = NULL;
                     if (abr == NULL)
                  {
-
                   printf("L'arbre a bien ete supprime ! \n");
                  }
                   break;
